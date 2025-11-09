@@ -1,0 +1,4 @@
+name: umimaclean
+
+include:
+  - ./apps/web/compose.yaml

@@ -1,4 +1,2 @@
-import { nextJsConfig } from "@workspace/eslint-config/next-js"
-
-/** @type {import("eslint").Linter.Config} */
-export default nextJsConfig
+import { configApp } from '@adonisjs/eslint-config'
+export default configApp()
