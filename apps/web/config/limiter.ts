@@ -1,3 +1,4 @@
+import Tables from '#core/enums/table_enum'
 import env from '#start/env'
 import { defineConfig, stores } from '@adonisjs/limiter'
 
@@ -9,7 +10,7 @@ const limiterConfig = defineConfig({
      * MYSQL or PostgreSQL database.
      */
     database: stores.database({
-      tableName: 'rate_limits',
+      tableName: Tables.RATE_LIMITS,
     }),
 
     /**
