@@ -23,8 +23,6 @@ export default function Login({ errors: serverErrors = {} }: { errors?: Record<s
 
   const router = useRouter()
 
-  console.log('Server Errors:', serverErrors)
-
   const form = useForm<LoginPayload>({
     resolver: vineResolver(loginSchema),
     defaultValues: {

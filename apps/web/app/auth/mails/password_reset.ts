@@ -1,5 +1,6 @@
 import env from '#start/env'
 import User from '#users/models/user'
+import router from '@adonisjs/core/services/router'
 import { BaseMail } from '@adonisjs/mail'
 
 /**
@@ -17,7 +18,11 @@ export default class PasswordResetNotification extends BaseMail {
   subject = 'Reset Kata Sandi Anda'
 
   prepare() {
-    const resetLink = `${env.get('DOMAIN')}/reset-password/${this.token}`
+    const resetLink = router.makeSignedUrl(
+      'reset-password.show',
+      { token: this.token },
+      { expiresIn: '60mins', prefixUrl: env.get('VITE_APP_URL'), purpose: 'reset_password' }
+    )
 
     this.message.to(this.user.email).from(this.from).subject(this.subject).html(`
       <html>
@@ -74,7 +79,7 @@ export default class PasswordResetNotification extends BaseMail {
               <h1>Permintaan Reset Kata Sandi</h1>
             </div>
             <div class="content">
-              <p>Halo ${this.user.fullName},</p>
+              <p>Halo ${this.user.name},</p>
               <p>Kami menerima permintaan untuk mereset kata sandi Anda. Jika Anda yang membuat permintaan ini, Anda dapat mereset kata sandi dengan mengklik tombol di bawah ini:</p>
               <a href="${resetLink}" class="button">Reset Kata Sandi Anda</a>
               <p>Jika Anda tidak meminta reset kata sandi, silakan abaikan email ini.</p>

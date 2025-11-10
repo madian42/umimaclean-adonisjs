@@ -14,6 +14,6 @@ export default class RegisterController {
 
     await auth.use('web').login(user)
 
-    return response.redirect().toRoute('dashboard')
+    return response.redirect().toRoute('bookings.create')
   }
 }

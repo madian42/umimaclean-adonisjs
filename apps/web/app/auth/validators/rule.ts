@@ -60,13 +60,7 @@ export const registerValidator = vine.compile(
       .trim()
       .minLength(8)
       .maxLength(16)
-      .regex(/^(?=.*\d)[A-Za-z\d]{8,16}$/),
-    password_confirmation: vine
-      .string()
-      .trim()
-      .minLength(8)
-      .maxLength(16)
       .regex(/^(?=.*\d)[A-Za-z\d]{8,16}$/)
-      .sameAs('password'),
+      .confirmed(),
   })
 )

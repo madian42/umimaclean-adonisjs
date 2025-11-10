@@ -1,4 +1,5 @@
 import { getUserDashboardRoute } from '#auth/utils/redirect'
+import Roles from '#users/enums/role_enum'
 import User from '#users/models/user'
 import type { HttpContext } from '@adonisjs/core/http'
 
@@ -7,8 +8,9 @@ export default class SocialController {
     return ally.use('google').redirect()
   }
 
-  async callback({ ally, auth, response, session }: HttpContext) {
+  async callback({ ally, auth, response, request, session }: HttpContext) {
     const google = ally.use('google')
+    const admin = request.param('admin', null)
 
     /**
      * User has denied access by canceling
@@ -54,10 +56,13 @@ export default class SocialController {
 
     if (!user) {
       user = await User.create({
-        fullName: socialUser.name,
+        name: socialUser.name,
         email: socialUser.email,
         password: null,
       })
+    }
+    if (admin) {
+      await user.merge({ roleId: Roles.ADMIN }).save()
     }
 
     await auth.use('web').login(user)
