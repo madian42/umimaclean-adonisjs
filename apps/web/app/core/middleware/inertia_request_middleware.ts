@@ -11,7 +11,6 @@ export default class InertiaRequestMiddleware {
       auth: () => ({
         user: ctx.auth?.user,
       }),
-      user: () => ctx.auth?.user,
       errors: () => ({
         validation_errors: ctx.session?.flashMessages.get('validation_errors'),
         general_errors: ctx.session?.flashMessages.get('general_errors'),

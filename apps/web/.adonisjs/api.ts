@@ -16,7 +16,7 @@ type LoginGetHead = {
   response: MakeTuyauResponse<import('../app/auth/controllers/login_controller.ts').default['show'], false>
 }
 type LoginPost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/auth/validators/validator.js')['loginSchema']>>
+  request: MakeTuyauRequest<InferInput<typeof import('../app/auth/validators/validator.ts')['loginSchema']>>
   response: MakeTuyauResponse<import('../app/auth/controllers/login_controller.ts').default['handle'], true>
 }
 type RegisterGetHead = {
@@ -24,7 +24,7 @@ type RegisterGetHead = {
   response: MakeTuyauResponse<import('../app/auth/controllers/register_controller.ts').default['show'], false>
 }
 type RegisterPost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/auth/validators/validator.js')['registerValidator']>>
+  request: MakeTuyauRequest<InferInput<typeof import('../app/auth/validators/rule.ts')['registerValidator']>>
   response: MakeTuyauResponse<import('../app/auth/controllers/register_controller.ts').default['handle'], true>
 }
 type ForgotPasswordGetHead = {
@@ -32,7 +32,7 @@ type ForgotPasswordGetHead = {
   response: MakeTuyauResponse<import('../app/auth/controllers/forgot_password_controller.ts').default['show'], false>
 }
 type ForgotPasswordPost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/auth/validators/validator.js')['forgotPasswordSchema']>>
+  request: MakeTuyauRequest<InferInput<typeof import('../app/auth/validators/validator.ts')['forgotPasswordSchema']>>
   response: MakeTuyauResponse<import('../app/auth/controllers/forgot_password_controller.ts').default['handle'], true>
 }
 type ResetpasswordIdGetHead = {
@@ -40,7 +40,7 @@ type ResetpasswordIdGetHead = {
   response: MakeTuyauResponse<import('../app/auth/controllers/reset_password_controller.ts').default['show'], false>
 }
 type ResetpasswordIdPost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/auth/validators/validator.js')['resetPasswordSchema']>>
+  request: MakeTuyauRequest<InferInput<typeof import('../app/auth/validators/validator.ts')['resetPasswordSchema']>>
   response: MakeTuyauResponse<import('../app/auth/controllers/reset_password_controller.ts').default['handle'], true>
 }
 type AuthGoogleRedirectGetHead = {
@@ -54,6 +54,42 @@ type AuthGoogleCallbackGetHead = {
 type LogoutPost = {
   request: unknown
   response: MakeTuyauResponse<import('../app/auth/controllers/logout_controller.ts').default['handle'], false>
+}
+type ProfileGetHead = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/users/controllers/profile_controller.ts').default['index'], false>
+}
+type ProfilePost = {
+  request: MakeTuyauRequest<InferInput<typeof import('../app/users/validators/profile.ts')['updateNameSchema']>>
+  response: MakeTuyauResponse<import('../app/users/controllers/profile_controller.ts').default['updateName'], true>
+}
+type ProfileChangepasswordPost = {
+  request: MakeTuyauRequest<InferInput<typeof import('../app/users/validators/profile.ts')['updatePasswordSchema']>>
+  response: MakeTuyauResponse<import('../app/users/controllers/profile_controller.ts').default['updatePassword'], true>
+}
+type ProfileAddressGetHead = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/users/controllers/address_controller.ts').default['index'], false>
+}
+type ProfileAddressPut = {
+  request: MakeTuyauRequest<InferInput<typeof import('../app/users/validators/address.ts')['addressSchema']>>
+  response: MakeTuyauResponse<import('../app/users/controllers/address_controller.ts').default['store'], true>
+}
+type BookingGetHead = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/bookings/controllers/booking_controller.ts').default['create'], false>
+}
+type BookingPost = {
+  request: MakeTuyauRequest<InferInput<typeof import('../app/bookings/validators/booking.ts')['bookingSchema']>>
+  response: MakeTuyauResponse<import('../app/bookings/controllers/booking_controller.ts').default['store'], true>
+}
+type BookingsGetHead = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/bookings/controllers/booking_controller.ts').default['index'], false>
+}
+type BookingsIdGetHead = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/bookings/controllers/booking_controller.ts').default['show'], false>
 }
 export interface ApiDefinition {
   'health': {
@@ -113,6 +149,44 @@ export interface ApiDefinition {
     };
     '$post': LogoutPost;
   };
+  'profile': {
+    '$url': {
+    };
+    '$get': ProfileGetHead;
+    '$head': ProfileGetHead;
+    '$post': ProfilePost;
+    'change-password': {
+      '$url': {
+      };
+      '$post': ProfileChangepasswordPost;
+    };
+    'address': {
+      '$url': {
+      };
+      '$get': ProfileAddressGetHead;
+      '$head': ProfileAddressGetHead;
+      '$put': ProfileAddressPut;
+    };
+  };
+  'booking': {
+    '$url': {
+    };
+    '$get': BookingGetHead;
+    '$head': BookingGetHead;
+    '$post': BookingPost;
+  };
+  'bookings': {
+    '$url': {
+    };
+    '$get': BookingsGetHead;
+    '$head': BookingsGetHead;
+    ':id': {
+      '$url': {
+      };
+      '$get': BookingsIdGetHead;
+      '$head': BookingsIdGetHead;
+    };
+  };
 }
 const routes = [
   {
@@ -121,6 +195,20 @@ const routes = [
     path: '/uploads/*',
     method: ["GET","HEAD"],
     types: {} as unknown,
+  },
+  {
+    params: [],
+    name: 'home',
+    path: '/',
+    method: ["GET","HEAD"],
+    types: {} as unknown,
+  },
+  {
+    params: [],
+    name: 'health',
+    path: '/health',
+    method: ["GET","HEAD"],
+    types: {} as HealthGetHead,
   },
   {
     params: [],
@@ -198,6 +286,69 @@ const routes = [
     path: '/logout',
     method: ["POST"],
     types: {} as LogoutPost,
+  },
+  {
+    params: [],
+    name: 'profile.show',
+    path: '/profile',
+    method: ["GET","HEAD"],
+    types: {} as ProfileGetHead,
+  },
+  {
+    params: [],
+    name: 'profile.update',
+    path: '/profile',
+    method: ["POST"],
+    types: {} as ProfilePost,
+  },
+  {
+    params: [],
+    name: 'profile.change_password.handle',
+    path: '/profile/change-password',
+    method: ["POST"],
+    types: {} as ProfileChangepasswordPost,
+  },
+  {
+    params: [],
+    name: 'profile.address',
+    path: '/profile/address',
+    method: ["GET","HEAD"],
+    types: {} as ProfileAddressGetHead,
+  },
+  {
+    params: [],
+    name: 'profile.address.handle',
+    path: '/profile/address',
+    method: ["PUT"],
+    types: {} as ProfileAddressPut,
+  },
+  {
+    params: [],
+    name: 'bookings.create',
+    path: '/booking',
+    method: ["GET","HEAD"],
+    types: {} as BookingGetHead,
+  },
+  {
+    params: [],
+    name: 'bookings.store',
+    path: '/booking',
+    method: ["POST"],
+    types: {} as BookingPost,
+  },
+  {
+    params: [],
+    name: 'bookings.index',
+    path: '/bookings',
+    method: ["GET","HEAD"],
+    types: {} as BookingsGetHead,
+  },
+  {
+    params: ["id"],
+    name: 'bookings.show',
+    path: '/bookings/:id',
+    method: ["GET","HEAD"],
+    types: {} as BookingsIdGetHead,
   },
 ] as const;
 export const api = {

@@ -81,6 +81,7 @@ export default defineConfig({
     () => import('#core/routes'),
     () => import('#auth/routes'),
     () => import('#users/routes'),
+    () => import('#bookings/routes'),
   ],
 
   /*

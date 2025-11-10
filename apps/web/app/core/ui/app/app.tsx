@@ -1,6 +1,7 @@
 /// <reference path="../../../../adonisrc.ts" />
 /// <reference path="../../../../config/inertia.ts" />
 
+import 'leaflet/dist/leaflet.css'
 import '../css/app.css'
 import { createRoot } from 'react-dom/client'
 import { createInertiaApp } from '@inertiajs/react'
