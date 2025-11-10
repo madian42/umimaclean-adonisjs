@@ -1,8 +1,9 @@
 import { BaseSchema } from '@adonisjs/lucid/schema'
-import Roles from '#users/enums/role'
+import Roles from '#users/enums/role_enum'
+import Tables from '#core/enums/table_enum'
 
 export default class extends BaseSchema {
-  protected tableName = 'roles'
+  protected tableName = Tables.ROLES
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {

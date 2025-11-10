@@ -1,26 +1,26 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 
 import User from '#users/models/user'
-import Roles from '#users/enums/role'
+import Roles from '#users/enums/role_enum'
 
 export default class UserSeeder extends BaseSeeder {
   async run() {
     await User.createMany([
       {
         email: 'admin@repo.com',
-        fullName: 'Administrador',
+        name: 'Administrador',
         password: 'wadaw123',
         roleId: Roles.ADMIN,
       },
       {
         email: 'staff@repo.com',
-        fullName: 'Staff Member',
+        name: 'Staff Member',
         password: 'wadaw123',
         roleId: Roles.STAFF,
       },
       {
         email: 'user@repo.com',
-        fullName: 'Regular User',
+        name: 'Regular User',
         password: 'wadaw123',
         roleId: Roles.USER,
       },

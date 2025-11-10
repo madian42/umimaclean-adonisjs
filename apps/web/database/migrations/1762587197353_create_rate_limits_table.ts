@@ -1,7 +1,8 @@
+import Tables from '#core/enums/table_enum'
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'rate_limits'
+  protected tableName = Tables.RATE_LIMITS
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
