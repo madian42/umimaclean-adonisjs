@@ -1,4 +1,12 @@
 {
-  "extends": "@umimaclean/typescript-config/base.json",
-  "exclude": ["apps/**/*"]
+  "extends": "@adonisjs/tsconfig/tsconfig.app.json",
+  "compilerOptions": {
+    "rootDir": "./",
+    "outDir": "./build",
+    "baseUrl": "./app/common/ui",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "exclude": ["./app/**/ui", "node_modules", "build"]
 }
