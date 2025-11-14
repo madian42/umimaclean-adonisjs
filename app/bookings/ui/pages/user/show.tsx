@@ -179,34 +179,38 @@ export default function BookingDetailPage({ booking }: { booking: Booking }) {
                         {format(booking.createdAt, 'd MMM yyyy H:mm', { locale: id })}
                       </span>
                     </div>
-                    <Separator />
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Waktu Penjemputan</span>
-                      <span className="text-sm">
-                        {format(booking.date, 'd MMM yyyy H:mm', { locale: id })}
-                      </span>
-                    </div>
-                    <Separator />
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Waktu Pengecekan</span>
-                      <span className="text-sm">
-                        {format(booking.date, 'd MMM yyyy H:mm', { locale: id })}
-                      </span>
-                    </div>
-                    <Separator />
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Waktu Pengantaran</span>
-                      <span className="text-sm">
-                        {format(booking.date, 'd MMM yyyy H:mm', { locale: id })}
-                      </span>
-                    </div>
-                    <Separator />
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Waktu Pesanan Selesai</span>
-                      <span className="text-sm">
-                        {format(booking.date, 'd MMM yyyy H:mm', { locale: id })}
-                      </span>
-                    </div>
+                    {booking.photos && (
+                      <>
+                        <Separator />
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Waktu Penjemputan</span>
+                          <span className="text-sm">
+                            {format(booking.date, 'd MMM yyyy H:mm', { locale: id })}
+                          </span>
+                        </div>
+                        <Separator />
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Waktu Pengecekan</span>
+                          <span className="text-sm">
+                            {format(booking.date, 'd MMM yyyy H:mm', { locale: id })}
+                          </span>
+                        </div>
+                        <Separator />
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Waktu Pengantaran</span>
+                          <span className="text-sm">
+                            {format(booking.date, 'd MMM yyyy H:mm', { locale: id })}
+                          </span>
+                        </div>
+                        <Separator />
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Waktu Pesanan Selesai</span>
+                          <span className="text-sm">
+                            {format(booking.date, 'd MMM yyyy H:mm', { locale: id })}
+                          </span>
+                        </div>
+                      </>
+                    )}
                   </AccordionContent>
                   <AccordionTrigger className="flex cursor-pointer justify-center pt-2">
                     {openDetail === 'item-1' ? 'Lihat Lebih Sedikit' : 'Lihat Semua'}

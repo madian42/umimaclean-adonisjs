@@ -1,12 +1,11 @@
-import { useEffect } from 'react'
-import { AlertCircle, Calendar, LoaderCircle, MapPin } from 'lucide-react'
-import UserLayout from '#common/ui/components/user-layout'
+import { useEffect, useState } from 'react'
+import { Calendar, CalendarDays, LoaderCircle } from 'lucide-react'
 import { Head } from '@inertiajs/react'
 import { Button } from '@/components/button'
-import { Card, CardContent } from '@/components/card'
-import { Alert, AlertDescription } from '@/components/alert'
-import { Link, useRouter } from '@tuyau/inertia/react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
+import { useRouter } from '@tuyau/inertia/react'
 import { Calendar as CalendarComponent } from '@/components/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/popover'
 import { addDays, addMonths, format, isSaturday, isWednesday } from 'date-fns'
 import { id } from 'date-fns/locale'
 import {
@@ -18,24 +17,25 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/form'
+import { cn } from '@/lib/utils'
 import { BookingPayload, bookingSchema } from '#bookings/validators/booking_validator'
 import { useForm } from 'react-hook-form'
 import { vineResolver } from '@hookform/resolvers/vine'
 import { toast } from 'sonner'
+import StaffLayout from '#common/ui/components/staff-layout'
 
-export default function Order({
-  addressId,
+export default function StaffBooking({
   errors: serverErrors = {},
 }: {
-  addressId: string
   errors?: Record<string, any>
 }) {
   const router = useRouter()
 
+  const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
+
   const form = useForm<BookingPayload>({
     resolver: vineResolver(bookingSchema),
     defaultValues: {
-      addressId,
       date: '',
     },
   })
@@ -55,6 +55,13 @@ export default function Order({
   }
 
   const availableDates = getAvailableDates()
+
+  function handleDateSelect(date: Date | undefined) {
+    if (date && availableDates.some((d) => d.toDateString() === date.toDateString())) {
+      form.setValue('date', format(date, 'yyyy-MM-dd'))
+      setIsCalendarOpen(false)
+    }
+  }
 
   async function onSubmit(data: BookingPayload) {
     router.visit(
@@ -88,7 +95,7 @@ export default function Order({
   }, [serverErrors, form])
 
   return (
-    <UserLayout>
+    <StaffLayout>
       <Head title="Order" />
 
       <div className="flex min-h-screen md:min-h-[calc(100vh-39px)] flex-col space-y-6 p-6">
@@ -98,31 +105,10 @@ export default function Order({
           <p className="text-muted-foreground">Pilih tanggal untuk penjemputan sepatu Anda</p>
         </div>
 
-        {!addressId && (
-          <Alert className="mb-4 border-amber-200 bg-amber-50">
-            <AlertCircle className="h-4 w-4 text-amber-600" />
-            <AlertDescription className="text-amber-800">
-              <div className="space-y-2">
-                <span className="block text-base">
-                  Anda belum menambahkan alamat. Silakan tambahkan alamat terlebih dahulu sebelum
-                  membuat pesanan.
-                </span>
-                <Link route="profile.address">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="w-full border-amber-300 bg-transparent cursor-pointer text-amber-700 hover:bg-amber-100"
-                  >
-                    <MapPin className="mr-1 h-3 w-3" />
-                    Tambah Alamat
-                  </Button>
-                </Link>
-              </div>
-            </AlertDescription>
-          </Alert>
-        )}
-
         <Card className="mx-auto w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-lg">Pilih Tanggal</CardTitle>
+          </CardHeader>
           <CardContent className="space-y-6">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -133,21 +119,39 @@ export default function Order({
                     const selectedDate = field.value ? new Date(field.value) : undefined
                     return (
                       <FormItem>
-                        <FormLabel className="flex justify-center font-semibold text-xl">Pilih Tanggal</FormLabel>
+                        <FormLabel>Pilih Tanggal</FormLabel>
                         <FormControl>
-                          <CalendarComponent
-                            className="w-full"
-                            mode="single"
-                            selected={selectedDate}
-                            onSelect={(date) => form.setValue('date', format(date!, 'yyyy-MM-dd'))}
-                            disabled={(date) => {
-                              if (!addressId) return true
-                              return !availableDates.some(
-                                (d) => d.toDateString() === date.toDateString()
-                              )
-                            }}
-                            locale={id}
-                          />
+                          <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+                            <PopoverTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className={cn(
+                                  'w-full justify-start text-left cursor-pointer font-normal',
+                                  !selectedDate && 'text-muted-foreground'
+                                )}
+                              >
+                                <CalendarDays className="mr-2 h-4 w-4" />
+                                {selectedDate
+                                  ? format(selectedDate, 'dd/MM/yyyy', { locale: id })
+                                  : 'Pilih Tanggal'}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[300px] p-0">
+                              <CalendarComponent
+                                className="w-full"
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={(date) => handleDateSelect(date)}
+                                disabled={(date) => {
+                                  return !availableDates.some(
+                                    (d) => d.toDateString() === date.toDateString()
+                                  )
+                                }}
+                                locale={id}
+                              />
+                            </PopoverContent>
+                          </Popover>
                         </FormControl>
                         <FormDescription>Tersedia hanya hari Rabu dan Sabtu</FormDescription>
                         <FormMessage />
@@ -159,7 +163,7 @@ export default function Order({
                 <Button
                   type="submit"
                   className="w-full py-3 text-white cursor-pointer hover:bg-gray-700"
-                  disabled={form.formState.isSubmitting || !addressId}
+                  disabled={form.formState.isSubmitting || !form.formState.isDirty}
                 >
                   {form.formState.isSubmitting && (
                     <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
@@ -171,6 +175,6 @@ export default function Order({
           </CardContent>
         </Card>
       </div>
-    </UserLayout>
+    </StaffLayout>
   )
 }
