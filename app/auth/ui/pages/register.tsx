@@ -6,14 +6,7 @@ import { vineResolver } from '@hookform/resolvers/vine'
 import { toast } from 'sonner'
 import { useEffect } from 'react'
 import AuthLayout from '../components/auth-layout'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/form'
 import { Input } from '@/components/input'
 import { Button } from '@/components/button'
 import { Spinner } from '@/components/spinner'

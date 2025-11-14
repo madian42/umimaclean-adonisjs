@@ -24,7 +24,7 @@ export default class LoginController {
       return User.verifyCredentials(payload.email, payload.password)
     })
     if (errors) {
-      logger.info(`Login failed for email: ${payload.email} from IP: ${request.ip()}`)
+      logger.error(`Login failed for email: ${payload.email} from IP: ${request.ip()}`)
       session.flash('limiter_errors', 'Terlalu banyak percobaan login. Silakan coba lagi nanti.')
       return response.redirect().toRoute('login.show')
     }
