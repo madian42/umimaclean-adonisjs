@@ -1,10 +1,11 @@
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import { belongsTo, column } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import Booking from './booking.js'
 import BookingPhotoStage from '#core/enums/booking_photo_stage_enum'
 import User from '#users/models/user'
 import Tables from '#core/enums/table_enum'
 import { DateTime } from 'luxon'
+import BaseModel from '#common/models/base_model'
 
 export default class BookingPhoto extends BaseModel {
   static table = Tables.BOOKING_PHOTOS
@@ -27,8 +28,8 @@ export default class BookingPhoto extends BaseModel {
   @column()
   declare note: string | null
 
-  @column.dateTime({ autoCreate: true })
-  declare uploadedAt: DateTime
+  @column.dateTime()
+  declare uploadedAt: DateTime | null
 
   @belongsTo(() => Booking, {
     foreignKey: 'bookingId',

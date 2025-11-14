@@ -22,14 +22,10 @@ export default class Booking extends BaseModel {
   declare userId: string
 
   @column()
-  declare addressId: string
+  declare addressId: string | null
 
   @column()
   declare date: Date
-
-  // in case needed later
-  // @column()
-  // declare time: string
 
   @belongsTo(() => User, {
     foreignKey: 'userId',

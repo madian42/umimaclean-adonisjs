@@ -11,17 +11,10 @@ export default class BookingController {
   async create({ inertia, auth }: HttpContext) {
     const user = auth.getUserOrFail()
 
-    let addressId: string | null = null
-    let role: string = 'staff'
+    const address = await Address.query().select('id').where('user_id', user.id).first()
 
-    if (user.isUser) {
-      const address = await Address.query().select('id').where('user_id', user.id).first()
-      addressId = address?.id ?? null
-      role = 'user'
-    }
-
-    return inertia.render(`bookings/${role}/create`, {
-      addressId,
+    return inertia.render('bookings/user/create', {
+      addressId: address?.id,
     })
   }
 
@@ -35,7 +28,6 @@ export default class BookingController {
         {
           addressId: payload.addressId,
           date: payload.date,
-          // time: payload.time, // in case needed later
           userId: user.id,
         },
         { client: trx }
@@ -68,7 +60,6 @@ export default class BookingController {
 
     // Get query parameters
     const page = request.input('page', 1)
-    const limit = request.input('limit', 10)
     const search = request.input('search', '')
     const status = request.input('status', 'active') // 'completed', 'active'
 
@@ -91,20 +82,29 @@ export default class BookingController {
         })
       })
     }
-    const bookings = await query.orderBy('created_at', 'desc').paginate(page, limit)
 
-    let role: string = 'staff'
-    if (user.isUser) {
-      role = 'user'
+    if (status === 'completed') {
+      query.whereHas('status', (statusBuilder) => {
+        statusBuilder
+          .where('name', BookingStatuses.COMPLETED)
+          .andWhereNot('name', BookingStatuses.CANCELLED)
+      })
+    } else if (status === 'active') {
+      query.whereHas('status', (statusBuilder) => {
+        statusBuilder
+          .whereNot('name', BookingStatuses.COMPLETED)
+          .andWhereNot('name', BookingStatuses.CANCELLED)
+      })
     }
 
-    return inertia.render(`bookings/${role}/index`, {
+    const bookings = await query.orderBy('created_at', 'desc').paginate(page, 10)
+
+    return inertia.render('bookings/user/index', {
       bookings: bookings.serialize(),
       filters: {
         search,
         status,
         page,
-        limit,
       },
     })
   }
@@ -124,12 +124,7 @@ export default class BookingController {
       return response.redirect().toRoute('bookings.index')
     }
 
-    let role: string = 'staff'
-    if (user.isUser) {
-      role = 'user'
-    }
-
-    return inertia.render(`bookings/${role}/show`, {
+    return inertia.render('bookings/user/show', {
       booking,
     })
   }
