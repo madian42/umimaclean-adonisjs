@@ -13,13 +13,13 @@ export default class UserSeeder extends BaseSeeder {
         roleId: Roles.ADMIN,
       },
       {
-        email: 'staff@repo.com',
+        email: 'staff@wada.com',
         name: 'Staff Member',
         password: 'wadaw123',
         roleId: Roles.STAFF,
       },
       {
-        email: 'user@repo.com',
+        email: 'saddam@wada.com',
         name: 'Regular User',
         password: 'wadaw123',
         roleId: Roles.USER,
