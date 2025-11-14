@@ -3,14 +3,7 @@ import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 import { useEffect, useState } from 'react'
-import {
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  useMap,
-  useMapEvents,
-} from 'react-leaflet'
+import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet'
 import { toast } from 'sonner'
 
 interface MapProps {
@@ -30,11 +23,7 @@ const customIcon = new L.Icon({
   shadowSize: [41, 41],
 })
 
-function MapCenterWatcher({
-  onCenterChange,
-}: {
-  onCenterChange: (latlng: LatLng) => void
-}) {
+function MapCenterWatcher({ onCenterChange }: { onCenterChange: (latlng: LatLng) => void }) {
   const map = useMapEvents({
     move: () => {
       // Update position as user drags the map for real-time address selection
@@ -118,13 +107,11 @@ export default function MapComponent({
           setMapCenter(position)
           onPositionChange?.(position)
           setIsDefaultLocation(true)
-        },
+        }
       )
     } else {
       // Graceful degradation for browsers without geolocation support
-      toast.error(
-        'Browser Anda tidak mendukung geolokasi. Menggunakan lokasi default.',
-      )
+      toast.error('Browser Anda tidak mendukung geolokasi. Menggunakan lokasi default.')
       setMapCenter(position)
       onPositionChange?.(position)
       setIsDefaultLocation(true)
@@ -163,9 +150,7 @@ export default function MapComponent({
         <MapCenterWatcher onCenterChange={handleCenterChange} />
         <CenteredMarker
           position={mapCenter}
-          popupText={
-            isDefaultLocation ? 'Lokasi Umima Clean' : 'Lokasi Anda Sekarang'
-          }
+          popupText={isDefaultLocation ? 'Lokasi Umima Clean' : 'Lokasi Anda Sekarang'}
           onRadiusChange={onRadiusChange}
         />
       </MapContainer>

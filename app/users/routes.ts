@@ -12,6 +12,7 @@ import router from '@adonisjs/core/services/router'
 
 const ProfileController = () => import('#users/controllers/profile_controller')
 const AddressController = () => import('#users/controllers/address_controller')
+const StaffProfileController = () => import('#users/controllers/staff_profile_controller')
 
 router
   .group(() => {
@@ -23,5 +24,7 @@ router
 
     router.get('/profile/address', [AddressController, 'index']).as('profile.address')
     router.put('/profile/address', [AddressController, 'store']).as('profile.address.handle')
+
+    router.get('/staff/profile', [StaffProfileController, 'index']).as('staff.profile.show')
   })
   .use(middleware.auth())

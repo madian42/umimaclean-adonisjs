@@ -30,13 +30,12 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
     <UserLayout>
       <Head title="Profil" />
 
-      <div className="flex flex-col space-y-6 p-6 min-h-screen">
+      <div className="flex min-h-screen md:min-h-[calc(100vh-39px)] flex-col space-y-6 p-6 md:pb-20">
         <div className="text-center">
           <User className="mx-auto mb-4 h-12 w-12 text-primary" />
           <h1 className="mb-2 text-2xl font-bold">Profil</h1>
           <p className="text-muted-foreground">Atur informasi akun dan alamat Anda</p>
         </div>
-
         <Tabs
           value={getCurrentTab()}
           onValueChange={handleTabChange}
@@ -54,7 +53,6 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
 
           <TabsContent value={getCurrentTab()}>{children}</TabsContent>
         </Tabs>
-
         <Button
           onClick={() => router.visit({ route: 'logout.handle' }, { method: 'post' })}
           variant="destructive"
