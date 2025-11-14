@@ -11,7 +11,7 @@ import AppLayout from '../components/app-layout'
 const appName = import.meta.env.VITE_APP_NAME || 'Umimaclean'
 
 createInertiaApp({
-  title: (title) => `${title} - ${appName}`,
+  title: (title) => `${title} | ${appName}`,
 
   resolve: (name) => {
     const firstPart = name.split('/')[0]

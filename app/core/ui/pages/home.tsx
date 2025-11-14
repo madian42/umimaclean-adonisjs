@@ -10,7 +10,7 @@ import { Head } from '@inertiajs/react'
 export default function Home() {
   return (
     <div className="mx-auto min-h-screen max-w-md bg-background">
-      <Head title='Umimaclean' />
+      <Head title="Umimaclean" />
       <Navbar />
 
       <HeroSection />

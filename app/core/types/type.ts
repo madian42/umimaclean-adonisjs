@@ -16,9 +16,12 @@ export interface Auth {
 }
 
 export interface User {
-  id: number
+  id: string
   name: string
   email: string
+  isAdmin: boolean
+  isStaff: boolean
+  isUser: boolean
   createdAt: Date
   updatedAt: Date
   [key: string]: unknown
@@ -42,9 +45,11 @@ export interface Booking {
   number: string
   date: string
   createdAt: string
+  adminId?: string | null
+  userId: string
   address: Address
   status: BookingStatus[]
-  service: ServiceItem[]
+  service?: ServiceItem[]
   photos: string[]
 }
 
@@ -76,4 +81,11 @@ export interface PaginatedData<T> {
     nextPageUrl: string | null
     previousPageUrl: string | null
   }
+}
+
+export interface Filters {
+  search: string
+  status: string
+  page: number
+  limit?: number
 }
