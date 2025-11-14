@@ -75,6 +75,10 @@ type ProfileAddressPut = {
   request: MakeTuyauRequest<InferInput<typeof import('../app/users/validators/address_validator.ts')['addressSchema']>>
   response: MakeTuyauResponse<import('../app/users/controllers/address_controller.ts').default['store'], true>
 }
+type StaffProfileGetHead = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/users/controllers/staff_profile_controller.ts').default['index'], false>
+}
 type BookingGetHead = {
   request: unknown
   response: MakeTuyauResponse<import('../app/bookings/controllers/booking_controller.ts').default['create'], false>
@@ -90,6 +94,22 @@ type BookingsGetHead = {
 type BookingsIdGetHead = {
   request: unknown
   response: MakeTuyauResponse<import('../app/bookings/controllers/booking_controller.ts').default['show'], false>
+}
+type DashboardGetHead = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/bookings/controllers/staff_booking_controller.ts').default['index'], false>
+}
+type StaffBookingsShipIdIdGetHead = {
+  request: unknown
+  response: MakeTuyauResponse<import('../app/bookings/controllers/staff_booking_controller.ts').default['shipMode'], false>
+}
+type StaffBookingsShipIdIdUploadshipphotoPost = {
+  request: MakeTuyauRequest<InferInput<typeof import('../app/bookings/validators/booking_validator.ts')['uploadShipPhotoSchema']>>
+  response: MakeTuyauResponse<import('../app/bookings/controllers/staff_booking_controller.ts').default['uploadShipPhoto'], true>
+}
+type StaffBookingsShipIdIdReleaseshipmodePost = {
+  request: MakeTuyauRequest<InferInput<typeof import('../app/bookings/validators/booking_validator.ts')['releaseShipModeSchema']>>
+  response: MakeTuyauResponse<import('../app/bookings/controllers/staff_booking_controller.ts').default['releaseShipMode'], true>
 }
 type TransactionsCreatedpIdPost = {
   request: unknown
@@ -172,6 +192,36 @@ export interface ApiDefinition {
       '$put': ProfileAddressPut;
     };
   };
+  'staff': {
+    'profile': {
+      '$url': {
+      };
+      '$get': StaffProfileGetHead;
+      '$head': StaffProfileGetHead;
+    };
+    'bookings': {
+      'ship': {
+        ':stage': {
+          ':id': {
+            '$url': {
+            };
+            '$get': StaffBookingsShipIdIdGetHead;
+            '$head': StaffBookingsShipIdIdGetHead;
+            'upload-ship-photo': {
+              '$url': {
+              };
+              '$post': StaffBookingsShipIdIdUploadshipphotoPost;
+            };
+            'release-ship-mode': {
+              '$url': {
+              };
+              '$post': StaffBookingsShipIdIdReleaseshipmodePost;
+            };
+          };
+        };
+      };
+    };
+  };
   'booking': {
     '$url': {
     };
@@ -190,6 +240,12 @@ export interface ApiDefinition {
       '$get': BookingsIdGetHead;
       '$head': BookingsIdGetHead;
     };
+  };
+  'dashboard': {
+    '$url': {
+    };
+    '$get': DashboardGetHead;
+    '$head': DashboardGetHead;
   };
   'transactions': {
     'create-dp': {
@@ -337,6 +393,13 @@ const routes = [
   },
   {
     params: [],
+    name: 'staff.profile.show',
+    path: '/staff/profile',
+    method: ["GET","HEAD"],
+    types: {} as StaffProfileGetHead,
+  },
+  {
+    params: [],
     name: 'bookings.create',
     path: '/booking',
     method: ["GET","HEAD"],
@@ -362,6 +425,34 @@ const routes = [
     path: '/bookings/:id',
     method: ["GET","HEAD"],
     types: {} as BookingsIdGetHead,
+  },
+  {
+    params: [],
+    name: 'staff.dashboard',
+    path: '/dashboard',
+    method: ["GET","HEAD"],
+    types: {} as DashboardGetHead,
+  },
+  {
+    params: ["stage","id"],
+    name: 'staff.bookings.ship',
+    path: '/staff/bookings/ship/:stage/:id',
+    method: ["GET","HEAD"],
+    types: {} as StaffBookingsShipIdIdGetHead,
+  },
+  {
+    params: ["stage","id"],
+    name: 'staff.bookings.upload',
+    path: '/staff/bookings/ship/:stage/:id/upload-ship-photo',
+    method: ["POST"],
+    types: {} as StaffBookingsShipIdIdUploadshipphotoPost,
+  },
+  {
+    params: ["stage","id"],
+    name: 'staff.bookings.release',
+    path: '/staff/bookings/ship/:stage/:id/release-ship-mode',
+    method: ["POST"],
+    types: {} as StaffBookingsShipIdIdReleaseshipmodePost,
   },
   {
     params: ["id"],
