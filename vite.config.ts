@@ -25,4 +25,8 @@ export default defineConfig({
       '@/': `${getDirname(import.meta.url)}/app/common/ui/`,
     },
   },
+
+  server: {
+    allowedHosts: ['still-bat-singularly.ngrok-free.app'],
+  },
 })

@@ -86,4 +86,11 @@ export default await Env.create(new URL('../', import.meta.url), {
   */
   SERVICE_CENTER_LATITUDE: Env.schema.number(),
   SERVICE_CENTER_LONGITUDE: Env.schema.number(),
+
+  /*
+  |----------------------------------------------------------
+  | Ngrok authtoken for tunneling
+  |----------------------------------------------------------
+  */
+  NGROK_AUTH_TOKEN: Env.schema.string(),
 })
