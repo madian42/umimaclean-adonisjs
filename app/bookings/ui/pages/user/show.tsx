@@ -110,12 +110,12 @@ export default function BookingDetailPage({ booking }: { booking: Booking }) {
                   </Badge>
                 </div>
                 <p className="text-sm ml-10 text-gray-700">
-                  {format(booking.status[booking.status.length - 1].updatedAt, 'd MMM yyyy H:mm', {
+                  {format(booking.status[0].updatedAt, 'd MMM yyyy H:mm', {
                     locale: id,
                   })}
                 </p>
 
-                {booking.status[booking.status.length - 1].name === 'waiting_deposit' && (
+                {booking.status[0].name === 'waiting_deposit' && (
                   <Button onClick={handleDownPayment} className="ml-10 mt-3 cursor-pointer">
                     Pembayaran DP
                   </Button>
@@ -141,16 +141,25 @@ export default function BookingDetailPage({ booking }: { booking: Booking }) {
             </CardContent>
           </Card>
 
-          {booking.photos && (
+          {booking.photos && booking.photos.length > 0 && (
             <Card className="gap-2">
               <CardHeader>
                 <CardTitle>Bukti</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="mt-2 grid grid-cols-3 gap-2">
-                  <PhotoThumb src={''} label="Pickup" />
-                  <PhotoThumb src={''} label="Condition" />
-                  <PhotoThumb src={''} label="Delivered" />
+                  <PhotoThumb
+                    src={`/storage/${booking.photos[0]?.path}`}
+                    label={booking.photos[0]?.stage}
+                  />
+                  <PhotoThumb
+                    src={`/storage/${booking.photos[1]?.path}`}
+                    label={booking.photos[1]?.stage}
+                  />
+                  <PhotoThumb
+                    src={`/storage/${booking.photos[2]?.path}`}
+                    label={booking.photos[2]?.stage}
+                  />
                 </div>
               </CardContent>
             </Card>

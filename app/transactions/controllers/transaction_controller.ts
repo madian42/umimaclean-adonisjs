@@ -13,13 +13,18 @@ import {
   MidtransResponse,
   TransactionCreatePayload,
   CreateTransactionFlow,
+  MidtransNotification,
 } from '#transactions/types/index'
+import { createHash } from 'node:crypto'
+import BookingStatus from '#bookings/models/booking_status'
+import BookingStatuses from '#core/enums/booking_status_enum'
+import transmit from '@adonisjs/transmit/services/main'
 
 export default class TransactionController {
   async createDP({ request, params, response, session }: HttpContext) {
     const booking = await Booking.query().where('id', params.id).preload('address').first()
     if (!booking) {
-      session.flash('general_error', 'Booking tidak ditemukan')
+      session.flash('general_errors', 'Booking tidak ditemukan')
       return response.redirect().back()
     }
 
@@ -37,11 +42,11 @@ export default class TransactionController {
   }
 
   async createFull({ request, params, response, session }: HttpContext) {
-    const amount = request.input('amount')
+    const amount = request.input('amount') as number
 
     const booking = await Booking.query().where('id', params.id).preload('address').first()
     if (!booking) {
-      session.flash('general_error', 'Booking tidak ditemukan')
+      session.flash('general_errors', 'Booking tidak ditemukan')
       return response.redirect().back()
     }
 
@@ -57,11 +62,98 @@ export default class TransactionController {
   }
 
   async show({ inertia, params }: HttpContext) {
-    const transactionId = await Transaction.query().where('booking_id', params.id).first()
+    const transaction = await Transaction.query()
+      .whereHas('booking', (query) => query.where('number', params.id))
+      .preload('booking')
+      .first()
 
-    return inertia.render('transactions/show', {
-      transactionId,
+    return inertia.render('transactions/payment', {
+      transaction,
     })
+  }
+
+  async notification({ request, response, session }: HttpContext) {
+    const notification = request.body() as MidtransNotification
+
+    const isValidSignature = await this.verifySignature(notification)
+    if (!isValidSignature) {
+      logger.warn('Invalid Midtrans signature for order ' + notification.order_id)
+      session.flash('general_errors', 'Signature tidak valid')
+      return response.redirect().back()
+    }
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { order_id, transaction_status, transaction_id, settlement_time, custom_field1 } =
+        notification
+
+      const booking = await Booking.query()
+        .where('number', order_id.split('_')[1])
+        .preload('address')
+        .preload('status')
+        .first()
+      if (!booking) {
+        session.flash('general_errors', 'Booking tidak ditemukan')
+        return response.redirect().back()
+      }
+
+      // Determine which leg of payment this notification belongs to
+      const type: 'dp' | 'full' =
+        custom_field1 === 'down_payment' ? 'dp' : custom_field1 === 'full_payment' ? 'full' : 'dp'
+
+      const transaction = await this.getTransactionByMidtransId(transaction_id, type)
+
+      if (type === 'dp' && transaction_status === 'settlement') {
+        await transaction
+          .merge({
+            midtransDownPaymentStatus: transaction_status,
+            downPaymentAt: settlement_time
+              ? DateTime.fromSQL(settlement_time)
+              : transaction.downPaymentAt,
+            // Only mark transaction partially paid on settlement of DP
+            status: TransactionStatuses.PARTIALLY_PAID,
+          })
+          .save()
+
+        await BookingStatus.create({
+          bookingId: booking.id,
+          name: BookingStatuses.PICKUP_SCHEDULED,
+        })
+
+        transmit.broadcast(`payments/${booking.number}/dp`, {
+          status: transaction_status,
+        })
+      }
+
+      if (type === 'full' && transaction_status === 'settlement') {
+        await transaction
+          .merge({
+            midtransFullPaymentStatus: transaction_status,
+            fullPaymentAt: settlement_time
+              ? DateTime.fromSQL(settlement_time)
+              : transaction.fullPaymentAt,
+            // Only mark fully paid on settlement of full payment
+            status: TransactionStatuses.PAID,
+          })
+          .save()
+
+        await BookingStatus.create({
+          bookingId: booking.id,
+          name: BookingStatuses.IN_PROCESS,
+        })
+
+        transmit.broadcast(`payments/${booking.number}/full`, {
+          status: transaction_status,
+        })
+      }
+
+      return response.redirect().toRoute('bookings.show', { id: booking.number })
+    } catch (error) {
+      logger.error(`Failed processing Midtrans notification: ${error.message}`)
+      return response
+        .redirect()
+        .toRoute('bookings.show', { id: notification.order_id.split('_')[1] })
+    }
   }
 
   private computeDpAmount(booking: Booking) {
@@ -70,10 +162,11 @@ export default class TransactionController {
     return 10000
   }
 
-  private buildMidtransOptions(body: MidtransChargeBody): FetchOptions {
+  private async sendCharge(body: MidtransChargeBody) {
     const serverKey = env.get('MIDTRANS_SERVER_KEY')
     const apiKey = Buffer.from(`${serverKey}:`).toString('base64')
-    return {
+
+    const options: FetchOptions = {
       method: 'POST',
       headers: {
         'accept': 'application/json',
@@ -82,18 +175,13 @@ export default class TransactionController {
       },
       body: JSON.stringify(body),
     }
-  }
 
-  private async sendCharge(options: FetchOptions) {
     const response = await fetch('https://api.sandbox.midtrans.com/v2/charge', options)
     if (!response.ok) {
       throw new Error(`Midtrans responded with status ${response.status}`)
     }
-    return (await response.json()) as MidtransResponse
-  }
 
-  private async createTransactionRecord(payload: TransactionCreatePayload) {
-    return Transaction.create(payload)
+    return (await response.json()) as MidtransResponse
   }
 
   private async createPaymentFlow({
@@ -137,14 +225,14 @@ export default class TransactionController {
 
     try {
       await paymentLimiter.consume(key)
-      const options = this.buildMidtransOptions(body)
-      const result = await this.sendCharge(options)
+      const result = await this.sendCharge(body)
 
       const recordPayload: TransactionCreatePayload = {
         bookingId: booking.id,
         status: TransactionStatuses.PENDING,
       }
       recordPayload[transactionField] = amount
+
       if (midtransFieldKey === 'midtransDownPaymentId') {
         recordPayload.midtransDownPaymentId = result.transaction_id
         recordPayload.midtransDownPaymentStatus = TransactionStatuses.PENDING
@@ -153,9 +241,10 @@ export default class TransactionController {
         recordPayload.midtransFullPaymentStatus = TransactionStatuses.PENDING
       }
 
-      await this.createTransactionRecord(recordPayload)
-      return response.redirect().toRoute('transactions.show', { id: booking.id })
-    } catch (error) {
+      await Transaction.create(recordPayload)
+
+      return response.redirect().toRoute('transactions.show', { id: booking.number })
+    } catch (error: any) {
       if (error instanceof errors.E_TOO_MANY_REQUESTS) {
         logger.warn('Too many payment attempts detected.')
         session.flash(
@@ -163,10 +252,31 @@ export default class TransactionController {
           'Terlalu banyak percobaan pembayaran. Silakan coba lagi nanti.'
         )
       } else {
-        logger.error('Gagal membuat transaksi: ' + (error.message ?? String(error)))
-        session.flash('general_error', 'Gagal membuat transaksi. Silakan coba lagi.')
+        logger.error(`Payment creation failed: ${error.message}`)
+        session.flash('general_errors', 'Gagal membuat transaksi. Silakan coba lagi.')
       }
       return response.redirect().back()
     }
+  }
+
+  private async verifySignature(notification: MidtransNotification) {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { order_id, status_code, gross_amount, signature_key } = notification
+    const serverKey = env.get('MIDTRANS_SERVER_KEY')
+    const hashString = order_id + status_code + gross_amount + serverKey
+    const calculatedSignature = createHash('sha512').update(hashString).digest('hex')
+    return calculatedSignature === signature_key
+  }
+
+  private async getTransactionByMidtransId(transactionId: string, type: 'dp' | 'full') {
+    let query = Transaction.query()
+    if (type === 'dp') {
+      query = query.where('midtrans_down_payment_id', transactionId).preload('booking')
+    } else {
+      query = query.where('midtrans_full_payment_id', transactionId).preload('booking')
+    }
+    const record = await query.first()
+    if (!record) throw new Error('Transaction not found for midtrans id ' + transactionId)
+    return record
   }
 }

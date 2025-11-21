@@ -16,5 +16,14 @@ router
     router
       .post('/transactions/create-dp/:id', [TransactionController, 'createDP'])
       .as('transactions.create_dp')
+    router
+      .post('/transactions/create-full/:id', [TransactionController, 'createFull'])
+      .as('transactions.create_full')
+
+    router.get('/transactions/:id', [TransactionController, 'show']).as('transactions.show')
   })
   .use(middleware.auth())
+
+router
+  .post('/transaction/callback', [TransactionController, 'notification'])
+  .as('transactions.callback')

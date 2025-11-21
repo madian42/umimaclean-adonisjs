@@ -115,7 +115,10 @@ export default class BookingController {
 
     const booking = await Booking.query()
       .preload('address')
-      .preload('status')
+      .preload('status', (statusQuery) => {
+        statusQuery.orderBy('updated_at', 'desc')
+      })
+      .preload('photos')
       .where('number', bookingNumber)
       .where('user_id', user.id)
       .first()
