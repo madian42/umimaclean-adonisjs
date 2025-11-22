@@ -13,30 +13,47 @@ import { id } from 'date-fns/locale'
 import { transmit } from '#core/ui/app/transmit'
 import { useEffect } from 'react'
 import { useRouter } from '@tuyau/inertia/react'
+import { Transaction } from '#core/types/type'
 
-export default function PaymentPage({ transaction }: { transaction: any }) {
+export default function PaymentPage({ transaction }: { transaction: Transaction }) {
   console.log('Transaction Data:', transaction)
   const router = useRouter()
 
   useEffect(() => {
-    // Create subscription
-    const sub = transmit.subscription(`payments/${transaction.booking.number}/dp`)
-
-    sub.create().catch(console.error)
-
-    // Listen for messages
-    const stop = sub.onMessage((data) => {
-      console.log('Realtime payment update:', data)
-
-      // example: reload page or update local state
-      router.visit({ route: 'bookings.show', params: { id: transaction.booking.number } })
-    })
-
-    return () => {
-      stop() // Remove message listener
-      sub.delete().catch(() => {})
+    if (!transaction?.booking) return
+    if (!transaction.booking.number) {
+      console.warn('Missing booking number for transmit subscription')
+      return
     }
-  }, [])
+
+    // Create subscription
+    const channel = `payments/${transaction.booking.number}/dp`
+    const sub = transmit.subscription(channel)
+
+    ;(async () => {
+      try {
+        await sub.create()
+      } catch (err) {
+        console.error('Transmit subscribe failed', err)
+        return
+      }
+
+      const stop = sub.onMessage((data) => {
+        console.log('Realtime payment update:', data)
+        // Refresh booking detail page
+        router.visit({
+          route: 'bookings.show',
+          params: { id: transaction.booking.number },
+        })
+      })
+
+      // Cleanup
+      return () => {
+        stop()
+        sub.delete().catch(() => {})
+      }
+    })()
+  }, [transaction.booking.number])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -71,7 +88,7 @@ export default function PaymentPage({ transaction }: { transaction: any }) {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Ringkasan Pesanan</span>
-              <Badge variant="outline">ID: {transaction.booking.bookingNumber}</Badge>
+              <Badge variant="outline">ID: {transaction.booking.number}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -80,14 +97,14 @@ export default function PaymentPage({ transaction }: { transaction: any }) {
               <span className="font-medium text-right">
                 {format(transaction.booking.date, 'd MMM yyyy H:mm', { locale: id })}
                 <br />
-                {transaction.booking.scheduledTime}
+                {/* {transaction.booking.scheduledTime} */}
               </span>
             </div>
             <hr />
             <div className="flex justify-between items-center">
               <span className="font-medium">Down Payment:</span>
               <span className="text-xl font-bold text-blue-600">
-                {formatIDR(transaction.downPayment)}
+                {/* {formatIDR(transaction.downPayment)} */}
               </span>
             </div>
           </CardContent>
@@ -171,7 +188,7 @@ export default function PaymentPage({ transaction }: { transaction: any }) {
                   4
                 </div>
                 <p className="text-sm">
-                  Konfirmasi pembayaran sebesar {formatIDR(transaction.downPayment)}
+                  {/* Konfirmasi pembayaran sebesar {formatIDR(transaction.downPayment)} */}
                 </p>
               </div>
 

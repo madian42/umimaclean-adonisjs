@@ -7,6 +7,7 @@ import BookingStatus from '#bookings/models/booking_status'
 import logger from '@adonisjs/core/services/logger'
 import { releaseShipModeSchema } from '#bookings/validators/booking_validator'
 import vine from '@vinejs/vine'
+import db from '@adonisjs/lucid/services/db'
 
 const uploadShipPhotoSchema = vine.compile(
   vine.object({
@@ -97,7 +98,9 @@ export default class StaffBookingController {
     const booking = await Booking.query()
       .where('number', params.id)
       .preload('address')
-      .preload('status')
+      .preload('status', (statusQuery) => {
+        statusQuery.orderBy('updated_at', 'desc')
+      })
       .preload('photos')
       .preload('shoe')
       .first()
@@ -124,41 +127,57 @@ export default class StaffBookingController {
       return response.redirect().toRoute('staff.dashboard')
     }
 
-    if (!existingPhoto) {
-      await BookingPhoto.create({
-        bookingId: booking.id,
-        adminId: user.id,
-        stage: params.stage,
-        path: `binding-${params.stage}`, // placeholder until photo uploaded
-        note: null,
-      })
-    } else {
-      await existingPhoto.merge({ adminId: user.id, note: null }).save()
-    }
+    const trx = await db.transaction()
 
-    const stageStatusMap: Record<string, BookingStatuses> = {
-      pickup: BookingStatuses.PICKUP_PROGRESS,
-      check: BookingStatuses.INSPECTION,
-      delivery: BookingStatuses.DELIVERY,
-    }
-
-    if (stageStatusMap[params.stage]) {
-      // Only create status if not exists
-      const existingStatus = await BookingStatus.query()
-        .where('booking_id', booking.id)
-        .where('name', stageStatusMap[params.stage])
-        .first()
-      if (!existingStatus) {
-        await BookingStatus.create({ bookingId: booking.id, name: stageStatusMap[params.stage] })
+    try {
+      if (!existingPhoto) {
+        await BookingPhoto.create(
+          {
+            bookingId: booking.id,
+            adminId: user.id,
+            stage: params.stage,
+            path: `binding-${params.stage}`, // placeholder until photo uploaded
+            note: null,
+          },
+          { client: trx }
+        )
+      } else {
+        await existingPhoto.useTransaction(trx).merge({ adminId: user.id, note: null }).save()
       }
+
+      const stageStatusMap: Record<string, BookingStatuses> = {
+        pickup: BookingStatuses.PICKUP_PROGRESS,
+        check: BookingStatuses.INSPECTION,
+        delivery: BookingStatuses.DELIVERY,
+      }
+
+      if (stageStatusMap[params.stage]) {
+        // Only create status if not exists
+        const existingStatus = await BookingStatus.query({ client: trx })
+          .where('booking_id', booking.id)
+          .where('name', stageStatusMap[params.stage])
+          .first()
+        if (!existingStatus) {
+          await BookingStatus.create(
+            { bookingId: booking.id, name: stageStatusMap[params.stage] },
+            { client: trx }
+          )
+        }
+      }
+
+      await trx.commit()
+
+      logger.info(`Staff ${user.id} melakukan ${params.stage} pada booking ${booking.id}`)
+      return inertia.render('bookings/staff/ship-mode', {
+        booking,
+        stage: params.stage,
+      })
+    } catch (error) {
+      logger.error(`Error during ship mode operation: ${error.message}`)
+      await trx.rollback()
+      session.flash('general_errors', 'Terjadi kesalahan saat memproses permintaan Anda.')
+      return response.redirect().toRoute('staff.dashboard')
     }
-
-    logger.info(`Staff ${user.id} melakukan ${params.stage} pada booking ${booking.id}`)
-
-    return inertia.render('bookings/staff/ship-mode', {
-      booking,
-      stage: params.stage,
-    })
   }
 
   async uploadShipPhoto({ inertia, response, request, session, params, auth }: HttpContext) {
@@ -213,29 +232,41 @@ export default class StaffBookingController {
 
     await payload.image.moveToDisk(relativePath)
 
-    await bookingPhoto
-      .merge({
-        path: relativePath,
-        note: null,
+    const trx = await db.transaction()
+
+    try {
+      await bookingPhoto
+        .useTransaction(trx)
+        .merge({
+          path: relativePath,
+          note: null,
+        })
+        .save()
+
+      const existingStatus = await BookingStatus.query({ client: trx })
+        .where('booking_id', booking.id)
+        .where('name', config.status)
+        .first()
+
+      if (!existingStatus) {
+        await BookingStatus.create({ bookingId: booking.id, name: config.status }, { client: trx })
+      }
+
+      await trx.commit()
+
+      logger.info(`Staff ${user.id} mengunggah foto ${params.stage} pada booking ${booking.id}`)
+
+      return inertia.render('bookings/staff/upload-ship-photo', {
+        bookingId: booking.id,
+        stage: params.stage,
+        photoUrl: relativePath,
       })
-      .save()
-
-    const existingStatus = await BookingStatus.query()
-      .where('booking_id', booking.id)
-      .where('name', config.status)
-      .first()
-
-    if (!existingStatus) {
-      await BookingStatus.create({ bookingId: booking.id, name: config.status })
+    } catch (error) {
+      logger.error(`Error during photo upload: ${error.message}`)
+      await trx.rollback()
+      session.flash('general_errors', 'Terjadi kesalahan saat mengunggah foto.')
+      return response.redirect().back()
     }
-
-    logger.info(`Staff ${user.id} mengunggah foto ${params.stage} pada booking ${booking.id}`)
-
-    return inertia.render('bookings/staff/upload-ship-photo', {
-      bookingId: booking.id,
-      stage: params.stage,
-      photoUrl: relativePath,
-    })
   }
 
   async releaseShipMode({ inertia, session, response, params, request, auth }: HttpContext) {

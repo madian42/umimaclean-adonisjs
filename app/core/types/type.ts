@@ -50,7 +50,18 @@ export interface Booking {
   address: Address
   status: BookingStatus[]
   service?: ServiceItem[]
-  photos: string[]
+  photos: Photo[]
+}
+
+interface Photo {
+  id: string
+  bookingId: string
+  adminId: string
+  stage: string
+  path: string
+  note: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 export interface ServiceItem {
@@ -59,7 +70,10 @@ export interface ServiceItem {
   prices: PriceLine[]
 }
 
-type PriceLine = { label: string; amount: number }
+interface PriceLine {
+  label: string
+  amount: number
+}
 
 export interface BookingStatus {
   id: string
@@ -88,4 +102,21 @@ export interface Filters {
   status: string
   page: number
   limit?: number
+}
+
+export interface Transaction {
+  id: string
+  bookingId: string
+  status: string
+  downPayment: string
+  fullPayment: string | null
+  midtransDownPaymentStatus: string | null
+  midtransFullPaymentStatus: string | null
+  midtransDownPaymentId: string | null
+  midtransFullPaymentId: string | null
+  downPaymentAt: string | null
+  fullPaymentAt: string | null
+  createdAt: string
+  updatedAt: string
+  booking: Booking
 }
