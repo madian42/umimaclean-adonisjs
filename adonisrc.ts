@@ -64,7 +64,7 @@ export default defineConfig({
     () => import('@adonisjs/limiter/limiter_provider'),
     () => import('@adonisjs/ally/ally_provider'),
     () => import('@tuyau/core/tuyau_provider'),
-    () => import('@adonisjs/transmit/transmit_provider')
+    () => import('@adonisjs/transmit/transmit_provider'),
   ],
 
   /*

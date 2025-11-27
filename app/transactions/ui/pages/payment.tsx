@@ -20,39 +20,33 @@ export default function PaymentPage({ transaction }: { transaction: Transaction 
   const router = useRouter()
 
   useEffect(() => {
-    if (!transaction?.booking) return
-    if (!transaction.booking.number) {
-      console.warn('Missing booking number for transmit subscription')
-      return
-    }
+    if (!transaction?.booking?.number) return
 
     // Create subscription
     const channel = `payments/${transaction.booking.number}/dp`
     const sub = transmit.subscription(channel)
 
+    let stop: (() => void) | undefined
     ;(async () => {
       try {
         await sub.create()
+
+        stop = sub.onMessage((data) => {
+          console.log('Realtime payment update:', data)
+          router.visit({
+            route: 'bookings.show',
+            params: { id: transaction.booking.number },
+          })
+        })
       } catch (err) {
         console.error('Transmit subscribe failed', err)
-        return
-      }
-
-      const stop = sub.onMessage((data) => {
-        console.log('Realtime payment update:', data)
-        // Refresh booking detail page
-        router.visit({
-          route: 'bookings.show',
-          params: { id: transaction.booking.number },
-        })
-      })
-
-      // Cleanup
-      return () => {
-        stop()
-        sub.delete().catch(() => {})
       }
     })()
+
+    return () => {
+      if (stop) stop()
+      sub.delete().catch(() => {})
+    }
   }, [transaction.booking.number])
 
   return (
@@ -104,7 +98,7 @@ export default function PaymentPage({ transaction }: { transaction: Transaction 
             <div className="flex justify-between items-center">
               <span className="font-medium">Down Payment:</span>
               <span className="text-xl font-bold text-blue-600">
-                {/* {formatIDR(transaction.downPayment)} */}
+                {formatIDR(Number(transaction.amount))}
               </span>
             </div>
           </CardContent>
@@ -127,7 +121,7 @@ export default function PaymentPage({ transaction }: { transaction: Transaction 
               <div className="text-center">
                 <div className="mx-auto w-48 h-48 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
                   <img
-                    src={`https://api.sandbox.midtrans.com/v2/qris/${transaction.midtransDownPaymentId}/qr-code`}
+                    src={`https://api.sandbox.midtrans.com/v2/qris/${transaction.midtransId}/qr-code`}
                     alt="QRIS QR Code"
                     className="w-full h-full object-contain"
                   />
@@ -188,7 +182,7 @@ export default function PaymentPage({ transaction }: { transaction: Transaction 
                   4
                 </div>
                 <p className="text-sm">
-                  {/* Konfirmasi pembayaran sebesar {formatIDR(transaction.downPayment)} */}
+                  Konfirmasi pembayaran sebesar {formatIDR(Number(transaction.amount))}
                 </p>
               </div>
 

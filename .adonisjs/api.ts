@@ -9,462 +9,549 @@ import type { InferInput } from '@vinejs/vine/types'
 
 type HealthGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/core/controllers/health_checks_controller.ts').default['handle'], false>
+  response: MakeTuyauResponse<
+    import('../app/core/controllers/health_checks_controller.ts').default['handle'],
+    false
+  >
 }
 type LoginGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/auth/controllers/login_controller.ts').default['show'], false>
+  response: MakeTuyauResponse<
+    import('../app/auth/controllers/login_controller.ts').default['show'],
+    false
+  >
 }
 type LoginPost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/auth/validators/auth_validator.ts')['loginSchema']>>
-  response: MakeTuyauResponse<import('../app/auth/controllers/login_controller.ts').default['handle'], true>
+  request: MakeTuyauRequest<
+    InferInput<(typeof import('../app/auth/validators/auth_validator.ts'))['loginSchema']>
+  >
+  response: MakeTuyauResponse<
+    import('../app/auth/controllers/login_controller.ts').default['handle'],
+    true
+  >
 }
 type RegisterGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/auth/controllers/register_controller.ts').default['show'], false>
+  response: MakeTuyauResponse<
+    import('../app/auth/controllers/register_controller.ts').default['show'],
+    false
+  >
 }
 type RegisterPost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/auth/validators/auth_rule.ts')['registerValidator']>>
-  response: MakeTuyauResponse<import('../app/auth/controllers/register_controller.ts').default['handle'], true>
+  request: MakeTuyauRequest<
+    InferInput<(typeof import('../app/auth/validators/auth_rule.ts'))['registerValidator']>
+  >
+  response: MakeTuyauResponse<
+    import('../app/auth/controllers/register_controller.ts').default['handle'],
+    true
+  >
 }
 type ForgotPasswordGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/auth/controllers/forgot_password_controller.ts').default['show'], false>
+  response: MakeTuyauResponse<
+    import('../app/auth/controllers/forgot_password_controller.ts').default['show'],
+    false
+  >
 }
 type ForgotPasswordPost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/auth/validators/auth_validator.ts')['forgotPasswordSchema']>>
-  response: MakeTuyauResponse<import('../app/auth/controllers/forgot_password_controller.ts').default['handle'], true>
+  request: MakeTuyauRequest<
+    InferInput<(typeof import('../app/auth/validators/auth_validator.ts'))['forgotPasswordSchema']>
+  >
+  response: MakeTuyauResponse<
+    import('../app/auth/controllers/forgot_password_controller.ts').default['handle'],
+    true
+  >
 }
 type ResetpasswordIdGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/auth/controllers/reset_password_controller.ts').default['show'], false>
+  response: MakeTuyauResponse<
+    import('../app/auth/controllers/reset_password_controller.ts').default['show'],
+    false
+  >
 }
 type ResetpasswordIdPost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/auth/validators/auth_validator.ts')['resetPasswordSchema']>>
-  response: MakeTuyauResponse<import('../app/auth/controllers/reset_password_controller.ts').default['handle'], true>
+  request: MakeTuyauRequest<
+    InferInput<(typeof import('../app/auth/validators/auth_validator.ts'))['resetPasswordSchema']>
+  >
+  response: MakeTuyauResponse<
+    import('../app/auth/controllers/reset_password_controller.ts').default['handle'],
+    true
+  >
 }
 type AuthGoogleRedirectGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/auth/controllers/social_controller.ts').default['redirect'], false>
+  response: MakeTuyauResponse<
+    import('../app/auth/controllers/social_controller.ts').default['redirect'],
+    false
+  >
 }
 type AuthGoogleCallbackGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/auth/controllers/social_controller.ts').default['callback'], false>
+  response: MakeTuyauResponse<
+    import('../app/auth/controllers/social_controller.ts').default['callback'],
+    false
+  >
 }
 type LogoutPost = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/auth/controllers/logout_controller.ts').default['handle'], false>
+  response: MakeTuyauResponse<
+    import('../app/auth/controllers/logout_controller.ts').default['handle'],
+    false
+  >
 }
 type ProfileGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/users/controllers/profile_controller.ts').default['index'], false>
+  response: MakeTuyauResponse<
+    import('../app/users/controllers/profile_controller.ts').default['index'],
+    false
+  >
 }
 type ProfilePost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/users/validators/profile_validator.ts')['updateNameSchema']>>
-  response: MakeTuyauResponse<import('../app/users/controllers/profile_controller.ts').default['updateName'], true>
+  request: MakeTuyauRequest<
+    InferInput<(typeof import('../app/users/validators/profile_validator.ts'))['updateNameSchema']>
+  >
+  response: MakeTuyauResponse<
+    import('../app/users/controllers/profile_controller.ts').default['updateName'],
+    true
+  >
 }
 type ProfileChangepasswordPost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/users/validators/profile_validator.ts')['updatePasswordSchema']>>
-  response: MakeTuyauResponse<import('../app/users/controllers/profile_controller.ts').default['updatePassword'], true>
+  request: MakeTuyauRequest<
+    InferInput<
+      (typeof import('../app/users/validators/profile_validator.ts'))['updatePasswordSchema']
+    >
+  >
+  response: MakeTuyauResponse<
+    import('../app/users/controllers/profile_controller.ts').default['updatePassword'],
+    true
+  >
 }
 type ProfileAddressGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/users/controllers/address_controller.ts').default['index'], false>
+  response: MakeTuyauResponse<
+    import('../app/users/controllers/address_controller.ts').default['index'],
+    false
+  >
 }
 type ProfileAddressPut = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/users/validators/address_validator.ts')['addressSchema']>>
-  response: MakeTuyauResponse<import('../app/users/controllers/address_controller.ts').default['store'], true>
+  request: MakeTuyauRequest<
+    InferInput<(typeof import('../app/users/validators/address_validator.ts'))['addressSchema']>
+  >
+  response: MakeTuyauResponse<
+    import('../app/users/controllers/address_controller.ts').default['store'],
+    true
+  >
 }
 type StaffProfileGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/users/controllers/staff_profile_controller.ts').default['index'], false>
+  response: MakeTuyauResponse<
+    import('../app/users/controllers/staff_profile_controller.ts').default['index'],
+    false
+  >
 }
 type BookingGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/bookings/controllers/booking_controller.ts').default['create'], false>
+  response: MakeTuyauResponse<
+    import('../app/bookings/controllers/booking_controller.ts').default['create'],
+    false
+  >
 }
 type BookingPost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/bookings/validators/booking_validator.ts')['bookingSchema']>>
-  response: MakeTuyauResponse<import('../app/bookings/controllers/booking_controller.ts').default['store'], true>
+  request: MakeTuyauRequest<
+    InferInput<(typeof import('../app/bookings/validators/booking_validator.ts'))['bookingSchema']>
+  >
+  response: MakeTuyauResponse<
+    import('../app/bookings/controllers/booking_controller.ts').default['store'],
+    true
+  >
 }
 type BookingsGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/bookings/controllers/booking_controller.ts').default['index'], false>
+  response: MakeTuyauResponse<
+    import('../app/bookings/controllers/booking_controller.ts').default['index'],
+    false
+  >
 }
 type BookingsIdGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/bookings/controllers/booking_controller.ts').default['show'], false>
+  response: MakeTuyauResponse<
+    import('../app/bookings/controllers/booking_controller.ts').default['show'],
+    false
+  >
 }
 type DashboardGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/bookings/controllers/staff_booking_controller.ts').default['index'], false>
+  response: MakeTuyauResponse<
+    import('../app/bookings/controllers/staff_booking_controller.ts').default['index'],
+    false
+  >
 }
 type StaffBookingsShipIdIdGetHead = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/bookings/controllers/staff_booking_controller.ts').default['shipMode'], false>
+  response: MakeTuyauResponse<
+    import('../app/bookings/controllers/staff_booking_controller.ts').default['shipMode'],
+    false
+  >
 }
 type StaffBookingsShipIdIdUploadshipphotoPost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/bookings/validators/booking_validator.ts')['uploadShipPhotoSchema']>>
-  response: MakeTuyauResponse<import('../app/bookings/controllers/staff_booking_controller.ts').default['uploadShipPhoto'], true>
+  request: MakeTuyauRequest<
+    InferInput<
+      (typeof import('../app/bookings/validators/booking_validator.ts'))['uploadShipPhotoSchema']
+    >
+  >
+  response: MakeTuyauResponse<
+    import('../app/bookings/controllers/staff_booking_controller.ts').default['uploadShipPhoto'],
+    true
+  >
 }
 type StaffBookingsShipIdIdReleaseshipmodePost = {
-  request: MakeTuyauRequest<InferInput<typeof import('../app/bookings/validators/booking_validator.ts')['releaseShipModeSchema']>>
-  response: MakeTuyauResponse<import('../app/bookings/controllers/staff_booking_controller.ts').default['releaseShipMode'], true>
+  request: MakeTuyauRequest<
+    InferInput<
+      (typeof import('../app/bookings/validators/booking_validator.ts'))['releaseShipModeSchema']
+    >
+  >
+  response: MakeTuyauResponse<
+    import('../app/bookings/controllers/staff_booking_controller.ts').default['releaseShipMode'],
+    true
+  >
 }
 type TransactionsCreatedpIdPost = {
   request: unknown
-  response: MakeTuyauResponse<import('../app/transactions/controllers/transaction_controller.ts').default['createDP'], false>
+  response: MakeTuyauResponse<
+    import('../app/transactions/controllers/transaction_controller.ts').default['createDP'],
+    false
+  >
 }
 export interface ApiDefinition {
   'health': {
-    '$url': {
-    };
-    '$get': HealthGetHead;
-    '$head': HealthGetHead;
-  };
+    $url: {}
+    $get: HealthGetHead
+    $head: HealthGetHead
+  }
   'login': {
-    '$url': {
-    };
-    '$get': LoginGetHead;
-    '$head': LoginGetHead;
-    '$post': LoginPost;
-  };
+    $url: {}
+    $get: LoginGetHead
+    $head: LoginGetHead
+    $post: LoginPost
+  }
   'register': {
-    '$url': {
-    };
-    '$get': RegisterGetHead;
-    '$head': RegisterGetHead;
-    '$post': RegisterPost;
-  };
+    $url: {}
+    $get: RegisterGetHead
+    $head: RegisterGetHead
+    $post: RegisterPost
+  }
   'forgot-password': {
-    '$url': {
-    };
-    '$get': ForgotPasswordGetHead;
-    '$head': ForgotPasswordGetHead;
-    '$post': ForgotPasswordPost;
-  };
+    $url: {}
+    $get: ForgotPasswordGetHead
+    $head: ForgotPasswordGetHead
+    $post: ForgotPasswordPost
+  }
   'reset-password': {
     ':token': {
-      '$url': {
-      };
-      '$get': ResetpasswordIdGetHead;
-      '$head': ResetpasswordIdGetHead;
-      '$post': ResetpasswordIdPost;
-    };
-  };
+      $url: {}
+      $get: ResetpasswordIdGetHead
+      $head: ResetpasswordIdGetHead
+      $post: ResetpasswordIdPost
+    }
+  }
   'auth': {
-    'google': {
-      'redirect': {
-        '$url': {
-        };
-        '$get': AuthGoogleRedirectGetHead;
-        '$head': AuthGoogleRedirectGetHead;
-      };
-      'callback': {
-        '$url': {
-        };
-        '$get': AuthGoogleCallbackGetHead;
-        '$head': AuthGoogleCallbackGetHead;
-      };
-    };
-  };
+    google: {
+      redirect: {
+        $url: {}
+        $get: AuthGoogleRedirectGetHead
+        $head: AuthGoogleRedirectGetHead
+      }
+      callback: {
+        $url: {}
+        $get: AuthGoogleCallbackGetHead
+        $head: AuthGoogleCallbackGetHead
+      }
+    }
+  }
   'logout': {
-    '$url': {
-    };
-    '$post': LogoutPost;
-  };
+    $url: {}
+    $post: LogoutPost
+  }
   'profile': {
-    '$url': {
-    };
-    '$get': ProfileGetHead;
-    '$head': ProfileGetHead;
-    '$post': ProfilePost;
+    '$url': {}
+    '$get': ProfileGetHead
+    '$head': ProfileGetHead
+    '$post': ProfilePost
     'change-password': {
-      '$url': {
-      };
-      '$post': ProfileChangepasswordPost;
-    };
+      $url: {}
+      $post: ProfileChangepasswordPost
+    }
     'address': {
-      '$url': {
-      };
-      '$get': ProfileAddressGetHead;
-      '$head': ProfileAddressGetHead;
-      '$put': ProfileAddressPut;
-    };
-  };
+      $url: {}
+      $get: ProfileAddressGetHead
+      $head: ProfileAddressGetHead
+      $put: ProfileAddressPut
+    }
+  }
   'staff': {
-    'profile': {
-      '$url': {
-      };
-      '$get': StaffProfileGetHead;
-      '$head': StaffProfileGetHead;
-    };
-    'bookings': {
-      'ship': {
+    profile: {
+      $url: {}
+      $get: StaffProfileGetHead
+      $head: StaffProfileGetHead
+    }
+    bookings: {
+      ship: {
         ':stage': {
           ':id': {
-            '$url': {
-            };
-            '$get': StaffBookingsShipIdIdGetHead;
-            '$head': StaffBookingsShipIdIdGetHead;
+            '$url': {}
+            '$get': StaffBookingsShipIdIdGetHead
+            '$head': StaffBookingsShipIdIdGetHead
             'upload-ship-photo': {
-              '$url': {
-              };
-              '$post': StaffBookingsShipIdIdUploadshipphotoPost;
-            };
+              $url: {}
+              $post: StaffBookingsShipIdIdUploadshipphotoPost
+            }
             'release-ship-mode': {
-              '$url': {
-              };
-              '$post': StaffBookingsShipIdIdReleaseshipmodePost;
-            };
-          };
-        };
-      };
-    };
-  };
+              $url: {}
+              $post: StaffBookingsShipIdIdReleaseshipmodePost
+            }
+          }
+        }
+      }
+    }
+  }
   'booking': {
-    '$url': {
-    };
-    '$get': BookingGetHead;
-    '$head': BookingGetHead;
-    '$post': BookingPost;
-  };
+    $url: {}
+    $get: BookingGetHead
+    $head: BookingGetHead
+    $post: BookingPost
+  }
   'bookings': {
-    '$url': {
-    };
-    '$get': BookingsGetHead;
-    '$head': BookingsGetHead;
+    '$url': {}
+    '$get': BookingsGetHead
+    '$head': BookingsGetHead
     ':id': {
-      '$url': {
-      };
-      '$get': BookingsIdGetHead;
-      '$head': BookingsIdGetHead;
-    };
-  };
+      $url: {}
+      $get: BookingsIdGetHead
+      $head: BookingsIdGetHead
+    }
+  }
   'dashboard': {
-    '$url': {
-    };
-    '$get': DashboardGetHead;
-    '$head': DashboardGetHead;
-  };
+    $url: {}
+    $get: DashboardGetHead
+    $head: DashboardGetHead
+  }
   'transactions': {
     'create-dp': {
       ':id': {
-        '$url': {
-        };
-        '$post': TransactionsCreatedpIdPost;
-      };
-    };
-  };
+        $url: {}
+        $post: TransactionsCreatedpIdPost
+      }
+    }
+  }
 }
 const routes = [
   {
-    params: ["*"],
+    params: ['*'],
     name: 'drive.fs.serve',
     path: '/uploads/*',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as unknown,
   },
   {
     params: [],
     name: 'home',
     path: '/',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as unknown,
   },
   {
     params: [],
     name: 'health',
     path: '/health',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as HealthGetHead,
   },
   {
     params: [],
     name: 'login.show',
     path: '/login',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as LoginGetHead,
   },
   {
     params: [],
     name: 'login.handle',
     path: '/login',
-    method: ["POST"],
+    method: ['POST'],
     types: {} as LoginPost,
   },
   {
     params: [],
     name: 'register.show',
     path: '/register',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as RegisterGetHead,
   },
   {
     params: [],
     name: 'register.handle',
     path: '/register',
-    method: ["POST"],
+    method: ['POST'],
     types: {} as RegisterPost,
   },
   {
     params: [],
     name: 'forgot_password.show',
     path: '/forgot-password',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as ForgotPasswordGetHead,
   },
   {
     params: [],
     name: 'forgot_password.handle',
     path: '/forgot-password',
-    method: ["POST"],
+    method: ['POST'],
     types: {} as ForgotPasswordPost,
   },
   {
-    params: ["token"],
+    params: ['token'],
     name: 'reset_password.show',
     path: '/reset-password/:token',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as ResetpasswordIdGetHead,
   },
   {
-    params: ["token"],
+    params: ['token'],
     name: 'reset_password.handle',
     path: '/reset-password/:token',
-    method: ["POST"],
+    method: ['POST'],
     types: {} as ResetpasswordIdPost,
   },
   {
     params: [],
     name: 'social.show',
     path: '/auth/google/redirect',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as AuthGoogleRedirectGetHead,
   },
   {
     params: [],
     name: 'social.callback',
     path: '/auth/google/callback',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as AuthGoogleCallbackGetHead,
   },
   {
     params: [],
     name: 'logout.handle',
     path: '/logout',
-    method: ["POST"],
+    method: ['POST'],
     types: {} as LogoutPost,
   },
   {
     params: [],
     name: 'profile.show',
     path: '/profile',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as ProfileGetHead,
   },
   {
     params: [],
     name: 'profile.update',
     path: '/profile',
-    method: ["POST"],
+    method: ['POST'],
     types: {} as ProfilePost,
   },
   {
     params: [],
     name: 'profile.change_password.handle',
     path: '/profile/change-password',
-    method: ["POST"],
+    method: ['POST'],
     types: {} as ProfileChangepasswordPost,
   },
   {
     params: [],
     name: 'profile.address',
     path: '/profile/address',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as ProfileAddressGetHead,
   },
   {
     params: [],
     name: 'profile.address.handle',
     path: '/profile/address',
-    method: ["PUT"],
+    method: ['PUT'],
     types: {} as ProfileAddressPut,
   },
   {
     params: [],
     name: 'staff.profile.show',
     path: '/staff/profile',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as StaffProfileGetHead,
   },
   {
     params: [],
     name: 'bookings.create',
     path: '/booking',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as BookingGetHead,
   },
   {
     params: [],
     name: 'bookings.store',
     path: '/booking',
-    method: ["POST"],
+    method: ['POST'],
     types: {} as BookingPost,
   },
   {
     params: [],
     name: 'bookings.index',
     path: '/bookings',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as BookingsGetHead,
   },
   {
-    params: ["id"],
+    params: ['id'],
     name: 'bookings.show',
     path: '/bookings/:id',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as BookingsIdGetHead,
   },
   {
     params: [],
     name: 'staff.dashboard',
     path: '/dashboard',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as DashboardGetHead,
   },
   {
-    params: ["stage","id"],
+    params: ['stage', 'id'],
     name: 'staff.bookings.ship',
     path: '/staff/bookings/ship/:stage/:id',
-    method: ["GET","HEAD"],
+    method: ['GET', 'HEAD'],
     types: {} as StaffBookingsShipIdIdGetHead,
   },
   {
-    params: ["stage","id"],
+    params: ['stage', 'id'],
     name: 'staff.bookings.upload',
     path: '/staff/bookings/ship/:stage/:id/upload-ship-photo',
-    method: ["POST"],
+    method: ['POST'],
     types: {} as StaffBookingsShipIdIdUploadshipphotoPost,
   },
   {
-    params: ["stage","id"],
+    params: ['stage', 'id'],
     name: 'staff.bookings.release',
     path: '/staff/bookings/ship/:stage/:id/release-ship-mode',
-    method: ["POST"],
+    method: ['POST'],
     types: {} as StaffBookingsShipIdIdReleaseshipmodePost,
   },
   {
-    params: ["id"],
+    params: ['id'],
     name: 'transactions.create_dp',
     path: '/transactions/create-dp/:id',
-    method: ["POST"],
+    method: ['POST'],
     types: {} as TransactionsCreatedpIdPost,
   },
-] as const;
+] as const
 export const api = {
   routes,
-  definition: {} as ApiDefinition
+  definition: {} as ApiDefinition,
 }
 declare module '@tuyau/inertia/types' {
   type InertiaApi = typeof api

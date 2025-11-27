@@ -15,6 +15,7 @@ export default class InertiaRequestMiddleware {
         validation_errors: ctx.session?.flashMessages.get('validation_errors'),
         general_errors: ctx.session?.flashMessages.get('general_errors'),
         limiter_errors: ctx.session?.flashMessages.get('limiter_errors'),
+        google_errors: ctx.session?.flashMessages.get('google_errors'),
       }),
     })
 

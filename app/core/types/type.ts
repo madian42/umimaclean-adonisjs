@@ -2,6 +2,7 @@ interface SharedErrors {
   validation_errors?: Record<string, string>
   general_errors?: string
   limiter_errors?: string
+  google_errors?: string
   [key: string]: unknown
 }
 
@@ -108,14 +109,11 @@ export interface Transaction {
   id: string
   bookingId: string
   status: string
-  downPayment: string
-  fullPayment: string | null
-  midtransDownPaymentStatus: string | null
-  midtransFullPaymentStatus: string | null
-  midtransDownPaymentId: string | null
-  midtransFullPaymentId: string | null
-  downPaymentAt: string | null
-  fullPaymentAt: string | null
+  amount: number
+  type: string
+  midtransStatus: string
+  midtransId: string
+  paymentAt: string | null
   createdAt: string
   updatedAt: string
   booking: Booking

@@ -20,38 +20,24 @@ export default class Transaction extends BaseModel {
   declare status: string
 
   @column()
-  declare downPayment: number
+  declare type: 'down_payment' | 'full_payment'
 
   @column()
-  declare fullPayment: number | null
+  declare amount: number
 
   @column()
-  declare midtransDownPaymentStatus: string
+  declare midtransStatus: string
 
   @column()
-  declare midtransFullPaymentStatus: string
-
-  @column()
-  declare midtransDownPaymentId: string
-
-  @column()
-  declare midtransFullPaymentId: string | null
+  declare midtransId: string
 
   @column.dateTime()
-  declare downPaymentAt: DateTime | null
-
-  @column.dateTime()
-  declare fullPaymentAt: DateTime | null
+  declare paymentAt: DateTime | null
 
   @belongsTo(() => Booking, {
     foreignKey: 'bookingId',
   })
   declare booking: BelongsTo<typeof Booking>
-
-  @belongsTo(() => User, {
-    foreignKey: 'userId',
-  })
-  declare user: BelongsTo<typeof User>
 
   @hasMany(() => TransactionItem, {
     foreignKey: 'transactionId',
