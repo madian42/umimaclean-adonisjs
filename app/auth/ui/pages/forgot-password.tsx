@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react'
+import { Head, usePage } from '@inertiajs/react'
 import AuthLayout from '../components/auth-layout'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/form'
 import { Link, useRouter } from '@tuyau/inertia/react'
@@ -9,9 +9,12 @@ import { Spinner } from '@/components/spinner'
 import { useForm } from 'react-hook-form'
 import { vineResolver } from '@hookform/resolvers/vine'
 import { toast } from 'sonner'
+import { useEffect } from 'react'
+import { SharedData } from '#core/types/type'
 
 export default function ForgotPassword() {
   const router = useRouter()
+  const { errors: serverErrors } = usePage<SharedData>().props
 
   const form = useForm<ForgotPasswordPayload>({
     resolver: vineResolver(forgotPasswordSchema),
@@ -40,6 +43,17 @@ export default function ForgotPassword() {
       }
     )
   }
+
+  useEffect(() => {
+    if (serverErrors.validation_errors && typeof serverErrors.validation_errors === 'object') {
+      Object.entries(serverErrors.validation_errors).forEach(([field, message]) => {
+        form.setError(field as keyof ForgotPasswordPayload, {
+          type: 'server',
+          message: message as string,
+        })
+      })
+    }
+  }, [serverErrors, form])
 
   return (
     <AuthLayout

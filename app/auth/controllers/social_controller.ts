@@ -27,10 +27,7 @@ export default class SocialController {
      * CSRF cookie gets expired.
      */
     if (google.stateMisMatch()) {
-      session.flash(
-        'google_errors',
-        'Verifikasi status OAuth gagal — kemungkinan cookie CSRF telah kedaluwarsa. Silakan coba lagi.'
-      )
+      session.flash('google_errors', 'Verifikasi status OAuth gagal. Silakan coba lagi.')
 
       return response.redirect().toRoute('register.show')
     }

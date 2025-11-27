@@ -21,6 +21,7 @@ export default class ForgotPasswordController {
       if (user) {
         const token = await ResetPasswordToken.generateToken(user, trx)
         await mail.sendLater(new PasswordResetNotification(user, token.token))
+
         await trx.commit()
       }
 

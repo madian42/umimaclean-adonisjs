@@ -7,9 +7,6 @@ import db from '@adonisjs/lucid/services/db'
 
 export default class ResetPasswordController {
   async show({ inertia, params }: HttpContext) {
-    /**
-     * Verify the request signature before proceeding.
-     */
     const token = await ResetPasswordToken.getToken(params.token)
     if (!token) {
       return inertia.render('core/errors/invalid-token')
@@ -19,9 +16,6 @@ export default class ResetPasswordController {
   }
 
   async handle({ request, params, session, inertia, response }: HttpContext) {
-    /**
-     * Validate the token validity
-     */
     const token = await ResetPasswordToken.getToken(params.token)
     if (!token) {
       return inertia.render('core/errors/invalid-token')

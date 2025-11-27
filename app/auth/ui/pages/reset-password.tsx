@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react'
+import { Head, usePage } from '@inertiajs/react'
 import AuthLayout from '../components/auth-layout'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/form'
 import { Input } from '@/components/input'
@@ -9,9 +9,12 @@ import { ResetPasswordPayload, resetPasswordSchema } from '#auth/validators/auth
 import { useForm } from 'react-hook-form'
 import { vineResolver } from '@hookform/resolvers/vine'
 import { toast } from 'sonner'
+import { useEffect } from 'react'
+import { SharedData } from '#core/types/type'
 
 export default function ResetPassword({ token }: { token: string }) {
   const router = useRouter()
+  const { errors: serverErrors } = usePage<SharedData>().props
 
   const form = useForm<ResetPasswordPayload>({
     resolver: vineResolver(resetPasswordSchema),
@@ -34,6 +37,7 @@ export default function ResetPassword({ token }: { token: string }) {
         fresh: true,
         onSuccess: () => {
           form.reset()
+          toast.success('Kata sandi berhasil direset!')
           router.visit({ route: 'login.show' })
         },
         onError: (errors) => {
@@ -44,6 +48,17 @@ export default function ResetPassword({ token }: { token: string }) {
       }
     )
   }
+
+  useEffect(() => {
+    if (serverErrors.validation_errors && typeof serverErrors.validation_errors === 'object') {
+      Object.entries(serverErrors.validation_errors).forEach(([field, message]) => {
+        form.setError(field as keyof ResetPasswordPayload, {
+          type: 'server',
+          message: message as string,
+        })
+      })
+    }
+  }, [serverErrors, form])
 
   return (
     <AuthLayout

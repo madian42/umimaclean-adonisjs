@@ -1,5 +1,5 @@
 import { RegisterPayload, registerSchema } from '#auth/validators/auth_validator'
-import { Head } from '@inertiajs/react'
+import { Head, usePage } from '@inertiajs/react'
 import { Link, useRouter } from '@tuyau/inertia/react'
 import { useForm } from 'react-hook-form'
 import { vineResolver } from '@hookform/resolvers/vine'
@@ -10,13 +10,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/input'
 import { Button } from '@/components/button'
 import { Spinner } from '@/components/spinner'
+import GoogleIcon from '../components/google'
+import { SharedData } from '#core/types/type'
 
-export default function Register({
-  errors: serverErrors = {},
-}: {
-  errors?: Record<string, string>
-}) {
+export default function Register() {
   const router = useRouter()
+  const { errors: serverErrors } = usePage<SharedData>().props
 
   const form = useForm<RegisterPayload>({
     resolver: vineResolver(registerSchema),
@@ -58,11 +57,15 @@ export default function Register({
         })
       })
     }
+
+    if (serverErrors.google_errors) {
+      toast.error(serverErrors.google_errors)
+    }
   }, [serverErrors, form])
 
   return (
     <AuthLayout title="Buat akun" description="Masukkan detail Anda di bawah untuk membuat akun">
-      <Head title="Register" />
+      <Head title="Registrasi" />
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
@@ -72,7 +75,7 @@ export default function Register({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nama</FormLabel>
+                  <FormLabel>Nama Lengkap</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
@@ -162,39 +165,8 @@ export default function Register({
                 asChild
                 className="flex w-full items-center justify-center border border-gray-300 bg-white text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-400 focus:outline-none"
               >
-                <a href={'/auth/google'} className="mt-4 w-full">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="mr-2"
-                  >
-                    <g clipPath="url(#clip0_17_40)">
-                      <path
-                        d="M19.805 10.23c0-.68-.06-1.36-.18-2H10v3.79h5.48c-.24 1.28-1.02 2.36-2.18 3.08v2.56h3.52c2.06-1.9 3.24-4.7 3.24-7.43z"
-                        fill="#4285F4"
-                      />
-                      <path
-                        d="M10 20c2.7 0 4.97-.89 6.63-2.41l-3.52-2.56c-.98.66-2.23 1.05-3.61 1.05-2.77 0-5.12-1.87-5.96-4.39H.92v2.75C2.57 17.98 6.03 20 10 20z"
-                        fill="#34A853"
-                      />
-                      <path
-                        d="M4.04 12.69c-.23-.66-.36-1.36-.36-2.09s.13-1.43.36-2.09V5.76H.92A9.98 9.98 0 000 10c0 1.64.39 3.19 1.08 4.24l2.96-2.55z"
-                        fill="#FBBC05"
-                      />
-                      <path
-                        d="M10 3.96c1.47 0 2.79.51 3.83 1.51l2.87-2.87C14.97 1.01 12.7 0 10 0 6.03 0 2.57 2.02.92 5.76l3.12 2.75C4.88 6.83 7.23 3.96 10 3.96z"
-                        fill="#EA4335"
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_17_40">
-                        <rect width="20" height="20" fill="white" />
-                      </clipPath>
-                    </defs>
-                  </svg>
+                <a href={'/auth/google/redirect'} className="mt-4 w-full">
+                  <GoogleIcon />
                   Masuk dengan Google
                 </a>
               </Button>

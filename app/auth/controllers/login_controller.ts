@@ -17,7 +17,7 @@ export default class LoginController {
     const loginLimiter = limiter.use({
       requests: 5,
       duration: '1 min',
-      blockDuration: '2 min',
+      blockDuration: '5 min',
     })
 
     const [errors, user] = await loginLimiter.penalize(key, () => {
