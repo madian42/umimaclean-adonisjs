@@ -9,6 +9,7 @@ enum Tables {
   BOOKINGS = 'bookings',
   BOOKING_STATUSES = 'booking_statuses',
   BOOKING_PHOTOS = 'booking_photos',
+  BOOKING_ACTIONS = 'booking_actions',
   SHOES = 'shoes',
   SERVICES = 'services',
   TRANSACTIONS = 'transactions',

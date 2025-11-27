@@ -31,6 +31,7 @@ export const bookingSchema = vine.compile(
 export const releaseShipModeSchema = vine.compile(
   vine.object({
     stage: vine.enum(BookingPhotoStage),
+    note: vine.string().optional(),
   })
 )
 
