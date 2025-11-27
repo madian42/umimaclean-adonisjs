@@ -1,4 +1,4 @@
-import UserLayout from '#common/ui/components/user-layout'
+import UserLayout from '@/components/layouts/user-layout'
 import { Head, router } from '@inertiajs/react'
 import { ClipboardList, Search } from 'lucide-react'
 import { useState } from 'react'

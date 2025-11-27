@@ -1,10 +1,9 @@
-import UserLayout from '#common/ui/components/user-layout'
-import { getStatusDisplay } from '#common/ui/lib/utils'
+import UserLayout from '@/components/layouts/user-layout'
 import { Link, useRouter } from '@tuyau/inertia/react'
 import { Button } from '@/components/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/card'
 import { ArrowLeft, Calendar, ChevronRight, MapPin, Truck, X } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn, getStatusDisplay } from '@/lib/utils'
 import { useState } from 'react'
 import {
   Accordion,

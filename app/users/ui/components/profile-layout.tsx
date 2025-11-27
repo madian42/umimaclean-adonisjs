@@ -1,6 +1,6 @@
 import { Head, usePage } from '@inertiajs/react'
 import type { ReactNode } from 'react'
-import UserLayout from '#common/ui/components/user-layout'
+import UserLayout from '@/components/layouts/user-layout'
 import { User } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/tabs'
 import { Button } from '@/components/button'

@@ -22,7 +22,7 @@ import { BookingPayload, bookingSchema } from '#bookings/validators/booking_vali
 import { useForm } from 'react-hook-form'
 import { vineResolver } from '@hookform/resolvers/vine'
 import { toast } from 'sonner'
-import StaffLayout from '#common/ui/components/staff-layout'
+import StaffLayout from '@/components/layouts/staff-layout'
 
 export default function StaffBooking({
   errors: serverErrors = {},

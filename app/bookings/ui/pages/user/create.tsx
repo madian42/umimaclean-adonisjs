@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { AlertCircle, Calendar, LoaderCircle, MapPin } from 'lucide-react'
-import UserLayout from '#common/ui/components/user-layout'
+import UserLayout from '@/components/layouts/user-layout'
 import { Head } from '@inertiajs/react'
 import { Button } from '@/components/button'
 import { Card, CardContent } from '@/components/card'
@@ -133,7 +133,9 @@ export default function Order({
                     const selectedDate = field.value ? new Date(field.value) : undefined
                     return (
                       <FormItem>
-                        <FormLabel className="flex justify-center font-semibold text-xl">Pilih Tanggal</FormLabel>
+                        <FormLabel className="flex justify-center font-semibold text-xl">
+                          Pilih Tanggal
+                        </FormLabel>
                         <FormControl>
                           <CalendarComponent
                             className="w-full"

@@ -1,4 +1,4 @@
-import { Button } from '#common/ui/components/button'
+import { Button } from '@/components/button'
 import {
   Form,
   FormControl,
@@ -6,10 +6,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '#common/ui/components/form'
-import { Input } from '#common/ui/components/input'
-import { Spinner } from '#common/ui/components/spinner'
-import StaffLayout from '#common/ui/components/staff-layout'
+} from '@/components/form'
+import { Input } from '@/components/input'
+import { Spinner } from '@/components/spinner'
+import StaffLayout from '@/components/layouts/staff-layout'
 import { SharedData } from '#core/types/type'
 import { UpdatePasswordPayload, updatePasswordSchema } from '#users/validators/profile_validator'
 import { vineResolver } from '@hookform/resolvers/vine'
