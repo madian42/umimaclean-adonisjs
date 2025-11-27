@@ -1,3 +1,4 @@
+import BookingActions from '#core/enums/booking_action_enum'
 import BookingPhotoStage from '#core/enums/booking_photo_stage_enum'
 import BookingStatuses from '#core/enums/booking_status_enum'
 import Tables from '#core/enums/table_enum'
@@ -59,11 +60,38 @@ export default class extends BaseSchema {
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).notNullable()
     })
+
+    this.schema.createTable(Tables.BOOKING_ACTIONS, (table) => {
+      table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'))
+      table
+        .uuid('booking_id')
+        .notNullable()
+        .references('id')
+        .inTable(Tables.BOOKINGS)
+        .onDelete('CASCADE')
+      table
+        .uuid('booking_photo_id')
+        .nullable()
+        .references('id')
+        .inTable(Tables.BOOKING_PHOTOS)
+        .onDelete('CASCADE')
+      table
+        .uuid('admin_id')
+        .notNullable()
+        .references('id')
+        .inTable(Tables.USERS)
+        .onDelete('CASCADE')
+      table.enum('action', Object.values(BookingActions)).notNullable()
+      table.text('note').nullable()
+
+      table.timestamp('created_at', { useTz: true }).notNullable()
+    })
   }
 
   async down() {
     this.schema.dropTable(Tables.BOOKINGS)
     this.schema.dropTable(Tables.BOOKING_STATUSES)
     this.schema.dropTable(Tables.BOOKING_PHOTOS)
+    this.schema.dropTable(Tables.BOOKING_ACTIONS)
   }
 }

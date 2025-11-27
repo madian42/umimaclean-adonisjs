@@ -17,15 +17,15 @@ export default class extends BaseSchema {
       table.string('email', 254).notNullable().unique()
       table.string('password').notNullable()
 
-      table.timestamp('created_at').notNullable()
-      table.timestamp('updated_at').nullable()
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).notNullable()
     })
 
     this.schema.createTable(Tables.ADDRESSES, (table) => {
       table.uuid('id').primary().defaultTo(this.raw('uuid_generate_v4()'))
       table.uuid('user_id').notNullable().references('id').inTable(Tables.USERS).onDelete('CASCADE')
       table.string('name').notNullable()
-      table.string('phone', 15).notNullable().unique()
+      table.string('phone', 15).notNullable()
       table.string('street').notNullable()
       table.decimal('latitude', 10, 6).notNullable()
       table.decimal('longitude', 10, 6).notNullable()

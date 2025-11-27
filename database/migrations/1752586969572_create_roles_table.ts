@@ -11,8 +11,8 @@ export default class extends BaseSchema {
       table.string('name', 50).notNullable()
       table.string('description', 255).nullable()
 
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).notNullable()
     })
 
     this.defer(async (db) => {
@@ -21,16 +21,22 @@ export default class extends BaseSchema {
           id: Roles.ADMIN,
           name: 'Admin',
           description: 'Super User with full access',
+          created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           id: Roles.STAFF,
           name: 'Staff',
           description: 'Staff User with limited access',
+          created_at: new Date(),
+          updated_at: new Date(),
         },
         {
           id: Roles.USER,
           name: 'User',
           description: 'Authenticated User',
+          created_at: new Date(),
+          updated_at: new Date(),
         },
       ])
     })

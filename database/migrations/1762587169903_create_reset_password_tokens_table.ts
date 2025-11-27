@@ -9,9 +9,9 @@ export default class extends BaseSchema {
       table.increments('id')
       table.uuid('user_id').notNullable().references('id').inTable(Tables.USERS).onDelete('CASCADE')
       table.string('token', 255).notNullable()
-      table.timestamp('expires_at').notNullable()
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('expires_at', { useTz: true }).notNullable()
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).notNullable()
     })
   }
 

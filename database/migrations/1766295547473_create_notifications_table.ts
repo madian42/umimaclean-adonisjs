@@ -10,8 +10,8 @@ export default class extends BaseSchema {
       table.text('auth').notNullable()
       table.string('p256dh').nullable()
 
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).notNullable()
     })
 
     this.schema.createTable(Tables.NOTIFICATIONS, (table) => {
@@ -22,8 +22,8 @@ export default class extends BaseSchema {
       table.boolean('is_read').defaultTo(false)
       table.string('type').notNullable()
 
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).notNullable()
     })
   }
 
