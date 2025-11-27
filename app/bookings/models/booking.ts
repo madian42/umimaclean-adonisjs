@@ -1,5 +1,5 @@
-import { beforeCreate, belongsTo, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations'
+import { beforeCreate, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import User from '#users/models/user'
 import Tables from '#core/enums/table_enum'
 import Transaction from '#transactions/models/transaction'
@@ -8,6 +8,7 @@ import BookingPhoto from './booking_photo.js'
 import BookingStatus from './booking_status.js'
 import BaseModel from '#common/models/base_model'
 import Address from '#users/models/address'
+import BookingAction from './booking_action.js'
 
 export default class Booking extends BaseModel {
   static table = Tables.BOOKINGS
@@ -37,15 +38,15 @@ export default class Booking extends BaseModel {
   })
   declare address: BelongsTo<typeof Address>
 
-  @hasOne(() => Transaction, {
+  @hasMany(() => Transaction, {
     foreignKey: 'bookingId',
   })
-  declare transaction: HasOne<typeof Transaction>
+  declare transactions: HasMany<typeof Transaction>
 
   @hasMany(() => Shoe, {
     foreignKey: 'bookingId',
   })
-  declare shoe: HasMany<typeof Shoe>
+  declare shoes: HasMany<typeof Shoe>
 
   @hasMany(() => BookingPhoto, {
     foreignKey: 'bookingId',
@@ -55,7 +56,12 @@ export default class Booking extends BaseModel {
   @hasMany(() => BookingStatus, {
     foreignKey: 'bookingId',
   })
-  declare status: HasMany<typeof BookingStatus>
+  declare statuses: HasMany<typeof BookingStatus>
+
+  @hasMany(() => BookingAction, {
+    foreignKey: 'bookingId',
+  })
+  declare actions: HasMany<typeof BookingAction>
 
   @beforeCreate()
   static async generateNumber(booking: Booking) {

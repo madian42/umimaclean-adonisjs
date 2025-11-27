@@ -66,7 +66,7 @@ export default class BookingController {
     // Build the base query
     const query = Booking.query()
       .preload('address')
-      .preload('status', (statusQuery) => {
+      .preload('statuses', (statusQuery) => {
         statusQuery.orderBy('updated_at', 'desc')
       })
       .where('user_id', user.id)
@@ -84,13 +84,13 @@ export default class BookingController {
     }
 
     if (status === 'completed') {
-      query.whereHas('status', (statusBuilder) => {
+      query.whereHas('statuses', (statusBuilder) => {
         statusBuilder
           .where('name', BookingStatuses.COMPLETED)
-          .andWhereNot('name', BookingStatuses.CANCELLED)
+          .andWhere('name', BookingStatuses.CANCELLED)
       })
     } else if (status === 'active') {
-      query.whereHas('status', (statusBuilder) => {
+      query.whereHas('statuses', (statusBuilder) => {
         statusBuilder
           .whereNot('name', BookingStatuses.COMPLETED)
           .andWhereNot('name', BookingStatuses.CANCELLED)
@@ -115,12 +115,13 @@ export default class BookingController {
 
     const booking = await Booking.query()
       .preload('address')
-      .preload('status', (statusQuery) => {
+      .preload('statuses', (statusQuery) => {
         statusQuery.orderBy('updated_at', 'desc')
       })
       .preload('photos')
+      .preload('transactions')
       .where('number', bookingNumber)
-      .where('user_id', user.id)
+      .andWhere('user_id', user.id)
       .first()
     if (!booking) {
       session.flash('general_errors', 'Booking tidak ditemukan.')
